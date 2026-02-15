@@ -8,6 +8,7 @@
     
     <title>@yield('title', 'Your Website')</title>
 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/body.css') }}">
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
@@ -22,6 +23,8 @@
                 <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
                 <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                <li class="nav-item"><a href="{{ route('admin.rbi') }}" class="nav-link">RBI</a></li>
+                <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -33,6 +36,7 @@
 
     <main>
         @yield('content')
+        @stack('scripts')
     </main>
 
     <footer class="footer">

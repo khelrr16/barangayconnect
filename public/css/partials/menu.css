@@ -48,6 +48,7 @@
     text-decoration: none;
     transition: background 0.3s ease;
     position: relative;
+    cursor:pointer;
 }
 
 .nav-link:hover {
