@@ -12,4 +12,9 @@ class CommunityOrganization extends Model
         'resident_id',
         'organization',
     ];
+
+    public function resident()
+    {
+        return $this->belongsTo(Resident::class, 'resident_id');
+    }
 }

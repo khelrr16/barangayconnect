@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('sex');
             $table->date('birthday');
             $table->string('birthplace');
+            $table->string('religion');
             $table->string('citizenship');
             $table->string('civil_status');
             $table->string('contact_number');
@@ -27,14 +28,16 @@ return new class extends Migration
             $table->string('ownership');
             $table->string('registered_voter');
             $table->string('precinct_number')->nullable();
-            $table->integer('residence_since');
             $table->foreignId('household_id')->constrained('households');
+            $table->integer('residence_since');
             $table->string('role');
             $table->string('educational_attainment');
             $table->string('occupation');
-            $table->string('total_income');
-            $table->string('benificiary_4ps');
+            $table->string('employment_status');
+            $table->string('monthly_income');
+            $table->string('status')->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

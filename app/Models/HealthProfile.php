@@ -16,6 +16,6 @@ class HealthProfile extends Model
 
     public function resident()
     {
-        return $this->belongsTo(Resident::class);
+        return $this->belongsTo(Resident::class, 'resident_id');
     }
 }

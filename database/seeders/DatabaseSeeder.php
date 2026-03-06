@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\CommunityOrganization;
 use App\Models\HealthProfile;
 use App\Models\Household;
 use App\Models\Resident;
-use App\Models\User;
+use App\Models\ResidentProgram;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,24 +19,101 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            RolePermissionSeeder::class,
+            UserSeeder::class,
+            ProgramSeeder::class,
         ]);
 
-        Household::factory()->count(5)
-            ->create()
-            ->each(function($household){
-                Resident::factory()
-                    ->count(rand(1, 3))
-                    ->create(['household_id' => $household->id])
-                    ->each(function($resident){
-                        HealthProfile::factory()
-                            ->count(rand(0, 3))
-                            ->create(['resident_id' => $resident->id]);
-                    });
-            });
+        $subs = [
+            'Conpil I Village', 
+            'Conpil III Executive', 
+            'Console 1 Village', 
+            'Greatland Village',
+            'Guevara Subdivision',
+            'Pacita 2A',
+            'Pacita 2B',
+        ];
+
+        foreach($subs as $sub){
+            for ($b = 1; $b < rand(5,10); $b++){
+                for ($l = 1; $l < rand(5,10); $l++){
+                    if(rand(1,7) == 7){
+                        for($u = 1; $u < rand(3,10); $u++){
+                            $household = Household::factory()
+                                ->create(['block' => $b, 'lot' => $l, 'unit' => $u, 'subdivision' => $sub]);
+
+                            $head = Resident::factory()
+                                ->create(['household_id' => $household->id, 'role' => 'Head']);
+
+                            $this->attachResidentData($head);
+
+                            Resident::factory()
+                                ->count(rand(1, 5))
+                                ->create(['household_id' => $household->id])
+                                ->each(fn($resident) => $this->attachResidentData($resident));
+                        }
+                    }
+                    else {
+                        $household = Household::factory()
+                            ->create(['block' => $b, 'lot' => $l, 'subdivision' => $sub]);
+
+                        $head = Resident::factory()
+                            ->create(['household_id' => $household->id, 'role' => 'Head']);
+
+                        $this->attachResidentData($head);
+
+                        Resident::factory()
+                            ->count(rand(1, 5))
+                            ->create(['household_id' => $household->id])
+                            ->each(fn($resident) => $this->attachResidentData($resident));
+                    }
+                }
+            }
+        }
+    }
+
+    private function attachResidentData($resident)
+    {
+        $orgs = [
+            'LGBTQ+',
+            'PWD',
+            'Senior Citizen',
+            'Solo Parent'
+        ];
+
+        $conditions = [
+            'Diabetes',
+            'Hypertension',
+            'Asthma',
+            'Cancer',
+            'Heart Disease',
+            'Arthritis'
+        ];
+
+        $selectedOrgs = collect($orgs)
+            ->shuffle()
+            ->take(rand(0, 3));
+
+        $selectedConditions = collect($conditions)
+            ->shuffle()
+            ->take(rand(0, 3));
+
+        foreach ($selectedOrgs as $org) {
+            CommunityOrganization::factory()
+            ->create(['resident_id' => $resident->id, 'organization' => $org]);
+        }
+
+        foreach ($selectedConditions as $condition) {
+            HealthProfile::factory()
+            ->create(['resident_id' => $resident->id, 'health_condition' => $condition]);
+        }
+
+        if(rand(1, 5) == 1){
+            for($p = 1; $p < rand(2, 4); $p++){
+                ResidentProgram::factory()
+                ->create(['resident_id' => $resident->id, 'program_id' => $p]);
+            }
+        }
     }
 }

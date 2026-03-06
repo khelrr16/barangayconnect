@@ -23,8 +23,11 @@
                 <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
                 <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
-                <li class="nav-item"><a href="{{ route('admin.rbi') }}" class="nav-link">RBI</a></li>
-                <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
+                @if (auth()->check() && auth()->user()->hasRole(['admin', 'staff']))
+                    <li class="nav-item"><a href="{{ route('admin.dashboard') }}" class="nav-link">Admin Dashboard</a></li>
+                @else
+                    <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
+                @endif
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>

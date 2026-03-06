@@ -15,9 +15,9 @@ class HouseholdFactory extends Factory
         return [
             'block' => $this->faker->numberBetween(1, 20),
             'lot' => $this->faker->numberBetween(1, 50),
-            'unit' => $this->faker->optional()->numberBetween(1, 10),
+            'unit' => null,
             'street' => $this->faker->streetName(),
-            'barangay' => $this->faker->randomElement([
+            'subdivision' => $this->faker->randomElement([
                 'Conpil I Village', 
                 'Conpil III Executive', 
                 'Console 1 Village', 
@@ -26,9 +26,6 @@ class HouseholdFactory extends Factory
                 'Pacita 2A',
                 'Pacita 2B',
                 ]),
-            'city' => 'San Pedro City',
-            'province' => 'Laguna',
-            'pet_count' => $this->faker->numberBetween(0, 5),
         ];
     }
 }

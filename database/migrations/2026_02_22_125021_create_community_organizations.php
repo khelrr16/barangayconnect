@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('community_organizations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('resident_id')->constrained('residents')->cascadeOnDelete();;
+            $table->foreignId('resident_id')->constrained('residents')->onDelete('cascade');
             $table->string('organization');
             $table->timestamps();
+
+            $table->unique(['resident_id', 'organization'], 'unique_community_org');
         });
     }
 

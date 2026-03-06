@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sidebarCollapsed) {
         sidebar.classList.add('collapsed');
         mainContent.classList.remove('with-sidebar');
-        toggleIcon.className = 'fas fa-bars';
+        toggleIcon.className = 'fa-solid fa-bars';
     } else {
         mainContent.classList.add('with-sidebar');
-        toggleIcon.className = 'fas fa-times';
+        toggleIcon.className = 'fa-solid fa-xmark';
     }
     
     sidebarToggle.addEventListener('click', function() {
@@ -20,11 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sidebar.classList.contains('collapsed')) {
             mainContent.classList.remove('with-sidebar');
             localStorage.setItem('sidebarCollapsed', 'true');
-            toggleIcon.className = 'fas fa-bars';
+            toggleIcon.className = 'fa-solid fa-bars';
         } else {
             mainContent.classList.add('with-sidebar');
             localStorage.setItem('sidebarCollapsed', 'false');
-            toggleIcon.className = 'fas fa-times';
+            toggleIcon.className = 'fa-solid fa-xmark';
         }
         
         if (window.innerWidth <= 768) {

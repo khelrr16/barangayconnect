@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('resident_id')->constrained('residents')->cascadeOnDelete();
             $table->string('health_condition');
             $table->timestamps();
+
+            $table->unique(['resident_id', 'health_condition'], 'unique_health_profile');
         });
     }
 

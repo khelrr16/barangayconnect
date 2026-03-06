@@ -4,8 +4,15 @@
 
 @section('content')
     <div class="container-fluid mt-4">
-        <h4 class="fw-bold mb-3">RBI Update Form</h4>
-        <div class="card shadow-sm card-custom mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-3">Registry of Brgy. Inhabitants (RBI)</h4>
+            <div>
+                <a href="{{ route('admin.rbi.upload.index') }}" class="btn btn-warning">UPLOAD CSV</a>
+                <a href="{{ route('admin.rbi.create') }}" class="btn btn-primary">+ NEW</a>
+            </div>
+        </div>
+
+        <!-- <div class="card shadow-sm card-custom mb-3">
             <div class="card-body">
                 <div class="row g-3 align-items-center">
                     <div class="col-md-4">
@@ -39,13 +46,12 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <p class="small text-muted">Showing 5 of 5 records</p>
-
+        </div> -->
+        
         <div class="card shadow-sm card-custom">
+            @if($residents->isNotEmpty())
             <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0">
+                <table class="table table-bordered table-hover align-middle mb-0" id="sortTable">
                     <thead class="text-center">
                         <tr>
                             <th>RBI NO.</th>
@@ -59,60 +65,48 @@
                     </thead>
 
                     <tbody class="text-center">
-                        <tr>
-                            <td>0001</td>
-                            <td>MERRICK GASPAR</td>
-                            <td>3x/day</td>
-                            <td>67</td>
-                            <td>HH-001</td>
-                            <td>BREEDER</td>
-                            <td>
-                                <a href="#" class="btn btn-warning btn-sm">VIEW</a>
-                                <a href="#" class="btn btn-warning btn-sm">EDIT</a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>0001</td>
-                            <td>MERRICK GASPAR</td>
-                            <td>3x/day</td>
-                            <td>67</td>
-                            <td>HH-001</td>
-                            <td>BREEDER</td>
-                            <td>
-                                <a href="#" class="btn btn-warning btn-sm">VIEW</a>
-                                <a href="#" class="btn btn-warning btn-sm">EDIT</a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>0001</td>
-                            <td>MERRICK GASPAR</td>
-                            <td>3x/day</td>
-                            <td>67</td>
-                            <td>HH-001</td>
-                            <td>BREEDER</td>
-                            <td>
-                                <a href="#" class="btn btn-warning btn-sm">VIEW</a>
-                                <a href="#" class="btn btn-warning btn-sm">EDIT</a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>0001</td>
-                            <td>MERRICK GASPAR</td>
-                            <td>3x/day</td>
-                            <td>67</td>
-                            <td>HH-001</td>
-                            <td>BREEDER</td>
-                            <td>
-                                <a href="#" class="btn btn-warning btn-sm">VIEW</a>
-                                <a href="#" class="btn btn-warning btn-sm">EDIT</a>
-                            </td>
-                        </tr>
+                        @foreach ($residents as $resident)
+                            <tr>
+                                <td>{{ $resident->rbi_no }}</td>
+                                <td>{{ $resident->full_name }}</td>
+                                <td>{{ $resident->sex }}</td>
+                                <td>{{ $resident->age }}</td>
+                                <td>
+                                    <a href="{{ route('admin.hh.show', $resident->household->id) }}" target="_blank">
+                                        {{ $resident->household->household_no }}
+                                    </a>
+                                </td>
+                                <td>{{ $resident->role }}</td>
+                                <td>
+                                    <a href="{{ route('admin.rbi.show', $resident->id) }}" class="btn btn-warning btn-sm">VIEW</a>
+                                    <a href="{{ route('admin.rbi.edit', $resident->id) }}" class="btn btn-warning btn-sm">EDIT</a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
+            @else
+            <div class="card-body text-center text-muted">
+                No results.
+            </div>
+            @endif
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let progressInterval = null;
+
+            if (window.DataTable) {
+                new window.DataTable('#sortTable', {
+                    responsive: true,
+                    paging: true,
+                    pageLength: 20
+                });
+            }
+        });
+    </script>
+@endpush

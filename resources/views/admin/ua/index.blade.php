@@ -8,7 +8,7 @@
 
     <!-- Add Button -->
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userModal">
-        <i class="bi bi-plus-circle"></i> Add User
+        <i class="fa-solid fa-circle-plus"></i> Add User
     </button>
 
     <!-- Users Table -->
@@ -30,10 +30,10 @@
                 <td>Admin</td>
                 <td>
                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#userModal">
-                        <i class="bi bi-pencil-square"></i> Edit
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="confirmDelete('Juan Dela Cruz')">
-                        <i class="bi bi-trash"></i> Delete
+                        <i class="fa-solid fa-trash"></i> Delete
                     </button>
                 </td>
             </tr>

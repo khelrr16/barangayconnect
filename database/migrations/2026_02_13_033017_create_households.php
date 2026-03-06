@@ -17,11 +17,12 @@ return new class extends Migration
             $table->integer('lot');
             $table->string('unit', 3)->nullable();
             $table->string('street');
-            $table->string('barangay');
-            $table->string('city');
-            $table->string('province');
+            $table->string('subdivision');
             $table->string('pet_count')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['block', 'lot', 'unit', 'street', 'subdivision'], 'unique_address');
         });
     }
 
