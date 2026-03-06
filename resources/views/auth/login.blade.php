@@ -304,11 +304,9 @@
                 </form>
 
                 <!-- Demo Credentials (Remove in production) -->
-                <div class="login-footer">
-                    <p>Demo Credentials:</p>
-                    <p>Admin: admin@example.com / password</p>
-                    <p>Staff: staff@example.com / password</p>
-                </div>
+                <!-- <div class="login-footer">
+                    
+                </div> -->
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-3">Registry of Brgy. Inhabitants (RBI)</h4>
             <div>
+                <a href="{{ route('admin.rbi.printable') }}" class="btn btn-outline-secondary">PRINTABLE</a>
                 <a href="{{ route('admin.rbi.upload.index') }}" class="btn btn-warning">UPLOAD CSV</a>
                 <a href="{{ route('admin.rbi.create') }}" class="btn btn-primary">+ NEW</a>
             </div>

@@ -38,6 +38,7 @@ Route::middleware(['auth', 'role:staff'])->prefix('admin')->name('admin.')->grou
     Route::get('rbi/upload/{csv}', [RBIUploadController::class, 'failed'])->name('rbi.upload.failed');
     Route::post('rbi/upload/csv', [RBIUploadController::class, 'uploadCsv'])->name('rbi.upload.csv');
     Route::get('rbi/upload/{importId}/status', [RBIUploadController::class, 'importStatus'])->name('rbi.upload.status');
+    Route::get('rbi/printable', [RBIController::class, 'printable'])->name('rbi.printable');
 
     Route::resource('rbi', RBIController::class);
     Route::resource('hh', HHController::class);

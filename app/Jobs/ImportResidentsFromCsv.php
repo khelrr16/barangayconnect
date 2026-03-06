@@ -134,7 +134,7 @@ class ImportResidentsFromCsv implements ShouldQueue
         DB::transaction(function () use ($validated) {
             $addressData = Arr::only($validated, ['subdivision', 'street', 'block', 'lot', 'unit']);
             $residentIdentity = Arr::only($validated, ['first_name', 'middle_name', 'last_name', 'extension_name']);
-
+            
             $existingResident = Resident::query()
                 ->whereHas('household', function ($query) use ($addressData) {
                     $query->where('block', $addressData['block'])
@@ -216,7 +216,7 @@ class ImportResidentsFromCsv implements ShouldQueue
             'registered_voter' => $this->firstNonEmpty($raw, ['registered_voter', 'registered_voter_']),
             'precinct_number' => $this->nullIfEmpty($this->firstNonEmpty($raw, ['precinct_number'])),
             'subdivision' => $this->firstNonEmpty($raw, ['address_subd_village', 'subdivision']),
-            'street' => $this->firstNonEmpty($raw, ['address_street', 'street']),
+            'street' => $this->normalizeStreet($this->firstNonEmpty($raw, ['address_street', 'street'])),
             'block' => $this->firstNonEmpty($raw, ['address_block', 'block']),
             'lot' => $this->firstNonEmpty($raw, ['address_lot', 'lot']),
             'unit' => $this->nullIfEmpty($this->firstNonEmpty($raw, ['address_apartment_unit', 'unit'])),
@@ -225,8 +225,30 @@ class ImportResidentsFromCsv implements ShouldQueue
             'educational_attainment' => $this->firstNonEmpty($raw, ['educational_attainment']),
             'occupation' => $this->nullIfEmpty($this->firstNonEmpty($raw, ['your_occupation', 'occupation'])),
             'employment_status' => $this->firstNonEmpty($raw, ['your_employment_status', 'employment_status']),
-            'monthly_income' => $this->firstNonEmpty($raw, ['household_average_total_income', 'monthly_income']),
+            'monthly_income' => $this->firstNonEmpty($raw, [
+                'monthly_total_income',
+                'monthly_income',
+                'household_average_total_income',
+            ]),
         ];
+    }
+
+    protected function normalizeStreet(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $trimmed = trim($value);
+        if ($trimmed === '') {
+            return null;
+        }
+
+        $normalized = preg_replace('/\b(?:street|st\.?)\b/iu', '', $trimmed);
+        $normalized = preg_replace('/\s{2,}/u', ' ', (string) $normalized);
+        $normalized = trim((string) $normalized, " \t\n\r\0\x0B,.-");
+
+        return $normalized !== '' ? $normalized : $trimmed;
     }
 
     protected function firstNonEmpty(array $raw, array $keys): ?string

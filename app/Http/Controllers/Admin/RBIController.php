@@ -20,6 +20,56 @@ class RBIController extends Controller
         return view('admin.rbi.index', compact('residents'));
     }
 
+    public function printable(Request $request)
+    {
+        $categories = [
+            'sex' => 'Sex',
+            'civil_status' => 'Civil Status',
+            'registered_voter' => 'Registered Voter',
+            'employment_status' => 'Employment Status',
+            'monthly_income' => 'Monthly Income',
+            'role' => 'Relationship to Head',
+        ];
+
+        $selectedCategory = (string) $request->input('category', '');
+        if (!array_key_exists($selectedCategory, $categories)) {
+            $selectedCategory = '';
+        }
+
+        $selectedValue = (string) $request->input('value', '');
+
+        $query = Resident::query()->with('household');
+
+        $values = [];
+        if ($selectedCategory !== '') {
+            $values = Resident::query()
+                ->whereNotNull($selectedCategory)
+                ->where($selectedCategory, '!=', '')
+                ->distinct()
+                ->orderBy($selectedCategory)
+                ->pluck($selectedCategory)
+                ->values()
+                ->all();
+
+            if ($selectedValue !== '') {
+                $query->where($selectedCategory, $selectedValue);
+            }
+        }
+
+        $residents = $query
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+
+        return view('admin.rbi.printable', compact(
+            'residents',
+            'categories',
+            'values',
+            'selectedCategory',
+            'selectedValue'
+        ));
+    }
+
     public function show($resident_id)
     {
         $resident = Resident::with(['household','household.head','commOrgs','programs','healthProfile'])->findOrFail($resident_id);
