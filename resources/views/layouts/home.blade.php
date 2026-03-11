@@ -9,9 +9,9 @@
     <title>@yield('title', 'Your Website')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/body.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/partials/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/partials/footer.css') }}">
 </head>
 <body>
     <nav class="navbar">
@@ -68,5 +68,7 @@
             </div>
         </div>
     </footer>
+
+    @include('partials.loading-screen')
 </body>
 </html>

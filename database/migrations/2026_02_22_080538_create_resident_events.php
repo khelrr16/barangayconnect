@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('resident_events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('resident_id')->constrained('residents')->onDelete('cascade');
+            $table->foreignId('resident_id')->constrained('residents');
             $table->string('event_type');
             $table->date('event_date');
             $table->text('description')->nullable();

@@ -20,13 +20,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RolePermissionSeeder::class,
-            UserSeeder::class,
+            PermissionSeeder::class,
             ProgramSeeder::class,
+            CommitteeSeeder::class,
+            OfficialSeeder::class,
+            UserSeeder::class,
         ]);
 
         $subs = [
-            'Conpil I Village', 
+            'Conpil I Village',
             'Conpil III Executive', 
             'Console 1 Village', 
             'Greatland Village',
@@ -35,13 +37,23 @@ class DatabaseSeeder extends Seeder
             'Pacita 2B',
         ];
 
+        foreach($subs as $index => $sub){
+            $streets[$index] = fake()->unique()->streetName();
+        }
+
         foreach($subs as $sub){
-            for ($b = 1; $b < rand(5,10); $b++){
+            for ($b = 1; $b < rand(5,8); $b++){
                 for ($l = 1; $l < rand(5,10); $l++){
                     if(rand(1,7) == 7){
                         for($u = 1; $u < rand(3,10); $u++){
                             $household = Household::factory()
-                                ->create(['block' => $b, 'lot' => $l, 'unit' => $u, 'subdivision' => $sub]);
+                                ->create([
+                                    'block' => $b, 
+                                    'lot' => $l, 
+                                    'unit' => $u, 
+                                    'street' => $streets[$b-1],
+                                    'subdivision' => $sub
+                                ]);
 
                             $head = Resident::factory()
                                 ->create(['household_id' => $household->id, 'role' => 'Head']);
@@ -56,7 +68,12 @@ class DatabaseSeeder extends Seeder
                     }
                     else {
                         $household = Household::factory()
-                            ->create(['block' => $b, 'lot' => $l, 'subdivision' => $sub]);
+                            ->create([
+                                'block' => $b, 
+                                'lot' => $l, 
+                                'street' => $streets[$b-1],
+                                'subdivision' => $sub
+                            ]);
 
                         $head = Resident::factory()
                             ->create(['household_id' => $household->id, 'role' => 'Head']);
@@ -100,13 +117,11 @@ class DatabaseSeeder extends Seeder
             ->take(rand(0, 3));
 
         foreach ($selectedOrgs as $org) {
-            CommunityOrganization::factory()
-            ->create(['resident_id' => $resident->id, 'organization' => $org]);
+            CommunityOrganization::create(['resident_id' => $resident->id, 'organization' => $org]);
         }
 
         foreach ($selectedConditions as $condition) {
-            HealthProfile::factory()
-            ->create(['resident_id' => $resident->id, 'health_condition' => $condition]);
+            HealthProfile::create(['resident_id' => $resident->id, 'health_condition' => $condition]);
         }
 
         if(rand(1, 5) == 1){

@@ -1,0 +1,97 @@
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">BarangayConnect</div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul class="nav-menu">
+            @can('view committee_dashboard')
+            <li class="nav-item">
+                <a href="{{ route('committee.dashboard') }}" class="nav-link">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span class="nav-text">DASHBOARD</span>
+                </a>
+            </li>
+            @endcan
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle no-arrow d-flex justify-content-between align-items-center" data-bs-target="#rbiSubmenu" aria-controls="rbiSubmenu" href="#" role="button" data-bs-toggle="collapse"  aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-rectangle-list"></i>
+                        <span class="nav-text">REGISTRY OF BRGY. INHABITANTS (RBI)</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down custom-arrow"></i>
+                </a>
+                <div class="collapse" id="rbiSubmenu">
+                    <ul class="nav flex-column ms-3">
+                        @can('view residents')
+                        <li class="nav-item">
+                            <a href="{{ route('resident.index') }}" class="nav-link">
+                                <i class="fa-solid fa-users"></i>
+                                <span class="nav-text">RESIDENTS</span>
+                            </a>
+                        </li>
+                        @endcan
+
+                        @can('view households')
+                        <li class="nav-item">
+                            <a href="{{ route('household.index') }}" class="nav-link">
+                                <i class="fa-solid fa-house"></i>
+                                <span class="nav-text">HOUSEHOLDS</span>
+                            </a>
+                        </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+
+            @can('manage users')
+            <li class="nav-item">
+                <a href="{{ route('admin.users.index') }}" class="nav-link">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span class="nav-text">USER ACCOUNTS</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('manage user_permissions')
+            <li class="nav-item">
+                <a href="{{ route('admin.roles-permissions.index') }}" class="nav-link">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span class="nav-text">ROLES PERMISSIONS</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('view health_sanitation')
+            <li class="nav-item">
+                <a href="{{ route('committee.immunization.index') }}" class="nav-link">
+                    <i class="fa-solid fa-syringe"></i>
+                    <span class="nav-text">Immunization for Infants</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="" class="nav-link">
+                    <i class="fa-solid fa-stethoscope"></i>
+                    <span class="nav-text">Medical Checkups</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="" class="nav-link">
+                    <i class="fa-solid fa-tablets"></i>
+                    <span class="nav-text">Medicine Inventory</span>
+                </a>
+            </li>
+            @endcan
+        </ul>
+    </nav>
+
+    <nav class="sidebar-footer">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="logout-btn btn btn-danger" type="submit">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </form>
+    </nav>
+</aside>

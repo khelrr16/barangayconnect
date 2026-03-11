@@ -292,7 +292,7 @@
                             <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                             <label for="remember">Remember me</label>
                         </div>
-                        <a href="" class="forgot-password">
+                        <a href="{{ route('password.request') }}" class="forgot-password">
                             Forgot Password?
                         </a>
                     </div>
@@ -355,5 +355,6 @@
             togglePassword.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
         });
     </script>
+    @include('partials.loading-screen')
 </body>
 </html>

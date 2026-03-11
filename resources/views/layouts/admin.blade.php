@@ -8,12 +8,12 @@
     <title>@yield('title', 'Admin Dashboard')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/partials/menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/partials/sidebar.css') }}">
     @stack('styles')
 </head>
 <body>
     <div class="admin-container">
-        @include('partials.menu')
+        @include('partials.sidebar')
         <div class="main-content" id="mainContent">
             <header class="admin-header">
                 <div class="header-left">
@@ -23,7 +23,7 @@
                 </div>
                 <div class="header-right">
                     <!-- <div class="logo-text">SIS</div> -->
-                    <img class="admin-logo" src="{{ asset('img/admin-logo.png') }}" alt="Logo">
+                    <img class="admin-logo" src="{{ asset('img/logo.png') }}" alt="Logo">
                 </div>
             </header>
 
@@ -35,6 +35,7 @@
     </div>
 
     <script src="{{ asset('js/admin/admin.js') }}"></script>
+    @include('partials.loading-screen')
     @stack('scripts')
 </body>
 </html>

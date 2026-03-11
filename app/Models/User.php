@@ -13,6 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
+        'official_id',
         'name',
         'email',
         'password',
@@ -31,23 +32,26 @@ class User extends Authenticatable
         ];
     }
 
-    public function isBanned()
-    {
-        return !$this->is_active;
-    }
-
-    public function isAdmin()
-    {
-        return $this->hasRole('admin');
-    }
-
-    public function isStaff()
-    {
-        return $this->hasRole('staff');
-    }
 
     public function uploads()
     {
         return $this->hasMany(ResidentCsvImport::class, 'created_by');
+    }
+
+    public function official()
+    {
+        return $this->belongsTo(Official::class);
+    }
+
+    public function committee()
+    {
+        return $this->hasOneThrough(
+            Committee::class,
+            Official::class,
+            'id',
+            'id',
+            'official_id',
+            'committee_id'
+        );
     }
 }

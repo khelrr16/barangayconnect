@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Household;
 use App\Models\Resident;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -90,7 +89,7 @@ class DashboardController extends Controller
                     '#FF6384',
                     '#36A2EB',
                     '#FFCE56',
-                    '#4BC0C0',
+                    '#4bc04b',
                 ]
             ],
             'employment' => [
@@ -100,9 +99,9 @@ class DashboardController extends Controller
                 'colors' => [
                     '#FF6384',
                     '#36A2EB',
+                    '#f837ff',
                     '#FFCE56',
-                    '#4BC0C0',
-                    '#FF6384',
+                    '#4bc04b',
                 ],
             ],
         ]);
