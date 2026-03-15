@@ -12,9 +12,11 @@
         "laravel/ui": "^4.6",
         "owen-it/laravel-auditing": "^14.0",
         "spatie/laravel-activitylog": "^4.12",
+        "phpoffice/phpword": "^1.0",
         "spatie/laravel-permission": "^6.24"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^4.1",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
