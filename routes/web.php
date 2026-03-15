@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\CertificateGenerationController;
 use App\Http\Controllers\Admin\CertificateRequestController;
 use App\Http\Controllers\Admin\CommitteeController;
 use App\Http\Controllers\Admin\ResidentLinkVerificationController;
@@ -90,6 +91,10 @@ Route::middleware('auth')->group(function () {
         Route::get('certificate-requests', [CertificateRequestController::class, 'index'])->name('certificate-requests.index');
         Route::get('certificate-requests/{certificate_request}', [CertificateRequestController::class, 'show'])->name('certificate-requests.show');
         Route::patch('certificate-requests/{certificate_request}', [CertificateRequestController::class, 'update'])->name('certificate-requests.update');
+
+        Route::get('certificates/indigency', [CertificateGenerationController::class, 'createIndigency'])->name('certificates.indigency.create');
+        Route::post('certificates/indigency', [CertificateGenerationController::class, 'generateIndigency'])->name('certificates.indigency.generate');
+        Route::get('certificates/residents-search', [CertificateGenerationController::class, 'searchResidents'])->name('certificates.residents-search');
 
         Route::get('verification-requests', [ResidentLinkVerificationController::class, 'index'])->name('verification-requests.index');
         Route::get('verification-requests/{verification}', [ResidentLinkVerificationController::class, 'show'])->name('verification-requests.show');
