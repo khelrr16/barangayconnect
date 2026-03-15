@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->enum('sex', ['Male', 'Female']);
             $table->string('mother_name')->nullable();
-            $table->foreignId('household_number')->nullable()->constrained('households');
-            $table->foreignId('foreign_household_number')->nullable()->constrained('foreign_households');
+            $table->foreignId('household_id')->nullable()->constrained('households');
+            $table->foreignId('foreign_household_id')->nullable()->constrained('foreign_households');
             $table->integer('cpab')->nullable();
             
             $table->date('breastfeed_after_birth')->nullable();
@@ -36,6 +36,7 @@ return new class extends Migration
             $table->date('mnp_end')->nullable();
             $table->date('fic')->nullable();
             $table->date('cic')->nullable();
+            $table->integer('malnutrition_type')->nullable();
             $table->string('status')->nullable();
 
             $table->timestamps();

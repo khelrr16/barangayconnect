@@ -2,6 +2,24 @@
 
 @section('title', 'Immunization')
 
+@push('scripts')
+    <style>
+        .form-check-input:checked + .form-check-label {
+            color: #0d6efd;
+        }
+
+        .card.border-primary {
+            border-width: 2px;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+    </style>
+@endpush
+
 @section('content')
     @php
         $subdivisions = ['Conpil I Village', 'Conpil III Executive', 'Console 1 Village', 'Greatland Village', 'Guevara Subdivision', 'Pacita 2A', 'Pacita 2B'];
@@ -15,7 +33,7 @@
             </a>
         </div>
 
-        <form action="{{ route('committee.immunization.store') }}" method="POST">
+        <form action="{{ route('committee.infant.store') }}" method="POST">
             @csrf
             
             <div class="card shadow-sm">
@@ -23,6 +41,7 @@
                     <h4 class="fw-bold mb-4 text-center">NEW INFANT</h4>
 
                     <div class="row">
+                        
                         <div class="col-6 border-end">
                             <div class="row">
                                 <div class="col-md-12 mb-3">
@@ -31,23 +50,8 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <small class="text-muted">FIRST NAME</small>
-                                    <input required type="text" name="first_name" class="form-control fw-bold" value="{{ old('first_name') }}">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <small class="text-muted">MIDDLE NAME</small>
-                                    <input type="text" name="middle_name" class="form-control fw-bold" value="{{ old('middle_name') }}">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <small class="text-muted">LAST NAME</small>
-                                    <input required type="text" name="last_name" class="form-control fw-bold" value="{{ old('last_name') }}">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <small class="text-muted">EXTENSION NAME</small>
-                                    <input type="text" name="extension_name" class="form-control fw-bold" value="{{ old('extension_name') }}">
+                                    <small class="text-muted">NAME</small>
+                                    <input required type="text" name="name" class="form-control fw-bold" value="{{ old('name') }}">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -68,20 +72,67 @@
                                     <small class="text-muted">MOTHER'S FULL NAME</small>
                                     <input required type="text" name="mother_name" class="form-control fw-bold" value="{{ old('mother_name') }}">
                                 </div>
+
+                                <div class="col-12 mb-3">
+                                    <small class="text-muted d-block mb-2 fw-bold">Child Protected at Birth (CPAB)</small>
+                                    <div class="row g-3">
+                                        {{-- Option 1: TT2/Td2 --}}
+                                        <div class="col-md-6">
+                                            <div class="card h-100 {{ old('cpab') == '1' ? 'border-primary' : '' }}">
+                                                <div class="card-body">
+                                                    <div class="form-check mb-2 d-flex justify-content-center gap-2">
+                                                        <input type="radio" name="cpab" id="cpab-1" value="1" class="form-check-input" {{ old('cpab') == '1' ? 'checked' : '' }}>
+                                                        <label class="form-check-label fw-bold" for="cpab-1">
+                                                            TT2/Td2
+                                                        </label>
+                                                    </div>
+                                                    <small class="text-muted d-block">
+                                                        Given to the mother a month prior to delivery
+                                                        (for mothers pregnant for the first time)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {{-- Option 2: TT3/Td3 to TT5/Td5 --}}
+                                        <div class="col-md-6">
+                                            <div class="card h-100 {{ old('cpab') == '2' ? 'border-primary' : '' }}">
+                                                <div class="card-body">
+                                                    <div class="form-check mb-2 d-flex justify-content-center gap-2">
+                                                        <input type="radio" name="cpab" id="cpab-2" value="2" class="form-check-input" {{ old('cpab') == '2' ? 'checked' : '' }}>
+                                                        <label class="form-check-label fw-bold" for="cpab-2">
+                                                            TT3/Td3 to TT5/Td5 <br class="d-none d-md-inline">
+                                                            <span class="text-secondary">(or TT1/Td1 to TT5/Td5)</span>
+                                                        </label>
+                                                    </div>
+                                                    <small class="text-muted d-block">
+                                                        Given to the mother anytime prior to delivery
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {{-- Additional Info (Optional) --}}
+                                    <div class="mt-2 text-info small">
+                                        <i class="fa-solid fa-info-circle me-1"></i>
+                                        CPAB status determines if the newborn is protected against neonatal tetanus.
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-6">  
                             <ul class="nav nav-pills mb-3 gap-3 justify-content-center" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button id="pills-address1-tab" data-bs-target="#pills-address1" aria-controls="pills-address1"
-                                        class="nav-link active" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">
+                                    <button id="pills-address1-tab" data-bs-target="#pills-address1"
+                                        class="nav-link {{ old('address_type') == 'san_lorenzo' ? 'active' : '' }}" data-bs-toggle="pill" type="button" role="tab">
                                         San Lorenzo Resident
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button id="pills-address2-tab" data-bs-target="#pills-address2" aria-controls="pills-address2"
-                                        class="nav-link" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">
+                                    <button id="pills-address2-tab" data-bs-target="#pills-address2"
+                                        class="nav-link {{ old('address_type') == 'non_san_lorenzo' ? 'active' : '' }}" data-bs-toggle="pill" type="button" role="tab">
                                         Non-San Lorenzo Resident
                                     </button>
                                 </li>
@@ -89,7 +140,7 @@
 
                             <div class="tab-content" id="pills-tabContent">
                                 {{-- San Lorenzo Resident Tab --}}
-                                <div class="tab-pane fade show active" id="pills-address1" aria-labelledby="pills-address1-tab" role="tabpanel">
+                                <div class="tab-pane fade {{ old('address_type') == 'san_lorenzo' ? 'active show' : '' }}" id="pills-address1" aria-labelledby="pills-address1-tab" role="tabpanel">
                                     <div class="row">
                                         <div class="col-md-2">
                                             <small class="text-muted">BLOCK</small>
@@ -120,11 +171,11 @@
                                 </div>
 
                                 {{-- Non-San Lorenzo Resident Tab --}}
-                                <div class="tab-pane fade" id="pills-address2" aria-labelledby="pills-address2-tab" role="tabpanel">
+                                <div class="tab-pane fade {{ old('address_type') == 'non_san_lorenzo' ? 'active show' : '' }}" id="pills-address2" aria-labelledby="pills-address2-tab" role="tabpanel">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <small class="text-muted">HOUSE NUMBER</small>
-                                            <input type="number" name="house_number" class="form-control fw-bold address2-field" value="{{ old('house_number') }}">
+                                            <input type="text" name="house_number" class="form-control fw-bold address2-field" value="{{ old('house_number') }}">
                                         </div>
                                         <div class="col-md-6">
                                             <small class="text-muted">STREET</small>
@@ -151,7 +202,7 @@
                             </div>
                             
                             {{-- Hidden field to identify which address type --}}
-                            <input type="hidden" name="address_type" id="address_type" value="san_lorenzo">
+                            <input type="hidden" name="address_type" id="address_type" value="{{ old('address_type') ?? '' }}">
                         </div>
                     </div>
 
@@ -194,9 +245,6 @@
                 }
             }
             
-            // Initial setup
-            toggleFields('san_lorenzo');
-            
             // Update on tab change
             tab1.addEventListener('shown.bs.tab', function() {
                 addressType.value = 'san_lorenzo';
@@ -207,6 +255,8 @@
                 addressType.value = 'non_san_lorenzo';
                 toggleFields('non_san_lorenzo');
             });
+
+            toggleFields(addressType.value);
         });
     </script>
 @endpush

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('foreign_households', function (Blueprint $table) {
             $table->id();
-            $table->integer('house_number')->nullable();
+            $table->string('house_number')->nullable();
             $table->string('street')->nullable();
             $table->string('subdivision')->nullable();
             $table->string('barangay')->nullable();

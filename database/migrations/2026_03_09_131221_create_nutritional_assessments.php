@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('nutritional_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('infant_id')->constrained('infants');
-            $table->string('age_category')->nullable();
-            $table->string('age_in_months')->nullable();
+            $table->string('category')->nullable();
+            $table->string('age')->nullable();
             $table->decimal('weight', 10, 2)->nullable();
             $table->decimal('length', 10, 2)->nullable();
             $table->string('status')->nullable();

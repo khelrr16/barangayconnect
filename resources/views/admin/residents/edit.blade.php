@@ -20,7 +20,7 @@
     <div class="container py-4">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('resident.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('admin.resident.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
@@ -39,10 +39,10 @@
             </div>
 
             <div>
-                <a class="btn btn-outline-secondary me-2" href="{{ route('resident.show', $resident->id) }}">
+                <a class="btn btn-outline-secondary me-2" href="{{ route('admin.resident.show', $resident->id) }}">
                     <i class="fa-solid fa-user"></i>
                 </a>
-                <form method="POST" action="{{ route('resident.destroy', $resident->id) }}" class="d-inline" onsubmit="return confirm('Delete this resident?');">
+                <form method="POST" action="{{ route('admin.resident.destroy', $resident->id) }}" class="d-inline" onsubmit="return confirm('Delete this resident?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
@@ -96,7 +96,7 @@
 
                         <h5 class="fw-bold mb-4">Personal Identification</h5>
 
-                        <form method="POST" action="{{ route('resident.update', $resident->id) }}">
+                        <form method="POST" action="{{ route('admin.resident.update', $resident->id) }}">
                             @csrf
                             @method('PATCH')
 
@@ -191,7 +191,7 @@
 
                         <h5 class="fw-bold mb-4">Residency Information</h5>
 
-                        <form method="POST" action="{{ route('resident.update', $resident->id) }}">
+                        <form method="POST" action="{{ route('admin.resident.update', $resident->id) }}">
                             @csrf
                             @method('PATCH')
 
@@ -267,7 +267,7 @@
 
                         <h5 class="fw-bold mb-4">Socio-Economic Data</h5>
 
-                        <form method="POST" action="{{ route('resident.update', $resident->id) }}">
+                        <form method="POST" action="{{ route('admin.resident.update', $resident->id) }}">
                             @csrf
                             @method('PATCH')
 
@@ -332,7 +332,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-4">Community Organization</h5>
 
-                        <form method="POST" action="{{ route('resident.update', $resident->id) }}">
+                        <form method="POST" action="{{ route('admin.resident.update', $resident->id) }}">
                             @csrf
                             @method('PATCH')
 
@@ -372,7 +372,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-4">Benificiaries</h5>
 
-                        <form method="POST" action="{{ route('resident.update', $resident->id) }}">
+                        <form method="POST" action="{{ route('admin.resident.update', $resident->id) }}">
                             @csrf
                             @method('PATCH')
                             
@@ -456,7 +456,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-4">Health Information</h5>
 
-                        <form method="POST" action="{{ route('resident.update', $resident->id) }}">
+                        <form method="POST" action="{{ route('admin.resident.update', $resident->id) }}">
                             @csrf
                             @method('PATCH')
 

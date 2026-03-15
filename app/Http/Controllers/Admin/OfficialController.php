@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Committee;
 use App\Models\Official;
+use App\Models\Committee;
 use Illuminate\Http\Request;
 
 class OfficialController extends Controller

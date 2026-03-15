@@ -23,13 +23,13 @@
     <div class="container py-4">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('resident.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('admin.resident.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
 
         <h4 class="fw-bold mb-3">New Resident for RBI</h4>
-        <form action="{{ route('resident.store') }}" method="POST">
+        <form action="{{ route('admin.resident.store') }}" method="POST">
             @csrf
             
             <div class="card shadow-sm">

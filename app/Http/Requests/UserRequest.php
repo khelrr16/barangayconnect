@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
-use App\Models\Official;
+use App\Models\Admin\Official;
 
 class UserRequest extends FormRequest
 {

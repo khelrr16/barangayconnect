@@ -37,7 +37,7 @@ class LoginController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         } elseif ($user->hasRole('clerk')) {
             return redirect()->intended(route('clerk.dashboard'));
-        } elseif ($user->hasRole('committee_head') || $user->hasRole('committee_member')) {
+        } elseif ($user->hasRole('committee_head')) {
             return redirect()->intended(route('committee.dashboard'));
         }
 

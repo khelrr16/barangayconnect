@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Program;
-use App\Models\Resident;
+use App\Models\Admin\Program;
+use App\Models\Admin\Resident;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ResidentProgram>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin\ResidentProgram>
  */
 class ResidentProgramFactory extends Factory
 {

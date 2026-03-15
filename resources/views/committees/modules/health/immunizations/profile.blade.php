@@ -2,7 +2,7 @@
 
 @section('title', 'Immunization')
 
-@push('scripts')
+@push('styles')
 <style>    
     /* Small text styling */
     .nav-tabs .nav-link small {
@@ -43,9 +43,6 @@
                 <div class="w-25 d-flex align-items-center justify-content-center bg-primary text-white border-end">
                     <h5 class="mb-0">
                         Immunization Profile
-                        <a class="btn btn-outline-secondary bg-warning" href="{{ route('committee.immunization.edit', $infant->id) }}">
-                            <i class="fa-solid fa-pencil"></i>
-                        </a>    
                     </h5>
                 </div>
 
@@ -55,36 +52,36 @@
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
 
                             <button id="nav-overview-tab" data-bs-target="#nav-overview"
-                                class="nav-link active  flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
+                                class="nav-link {{ session('activeTab') ? '' : 'active' }}  flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 Overview
                             </button>
 
                             <button id="nav-newborn-tab" data-bs-target="#nav-newborn" 
-                                class="nav-link flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
+                                class="nav-link {{ session('activeTab') == 'newborn' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 Newborn <br>
                                 <small>0-28 days old</small>
                             </button>
                             
                             <button id="nav-1-3-tab" data-bs-target="#nav-1-3" 
-                                class="nav-link flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
+                                class="nav-link {{ session('activeTab') == 'months_1_3' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 1-3 months old <br>
                                 <small>6-14 weeks</small>
                             </button>
                             
                             <button id="nav-6-11-tab" data-bs-target="#nav-6-11"
-                                class="nav-link flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
+                                class="nav-link {{ session('activeTab') == 'months_6_11' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 6-11 months old <br>
                                 <small>Vitamin, MNP, MMR</small>
                             </button>
                             
                             <button id="nav-12-tab" data-bs-target="#nav-12"
-                                class="nav-link flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
+                                class="nav-link {{ session('activeTab') == 'months_12' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 12 months old <br>
                                 <small>MMR, FIC</small>
                             </button>
 
                             <button id="nav-monitoring-tab" data-bs-target="#nav-monitoring"
-                                class="nav-link flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
+                                class="nav-link {{ session('activeTab') == 'monitoring' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 Monitoring
                             </button>
 
@@ -148,8 +145,34 @@
                                 CHILD PROTECTED AT BIRTH
                             </small>
                             <div class="fw-semibold">
-                                {{ $infant->cpab ? 'Yes' : 'N/A' }}
+                                @if($infant->cpab == 1)
+                                    TTd2
+                                @elseif($infant->cpab == 2)
+                                    TT3/Td3 to TT5/Td5 <br>
+                                    (or TT1/Td1 to TT5/Td5)
+                                @else
+                                    N/A
+                                @endif
                             </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <small class="text-muted">
+                                <i class="fa-solid fa-house"></i>
+                                ADDRESS
+                            </small>
+                            <div class="fw-bold">
+                                @if($infant->household_id)
+                                    {{ $infant->household->first_address }} <br>
+                                    {{ $infant->household->second_address }}
+                                @elseif($infant->foreign_household_id)
+                                    {{ $infant->foreign_household->first_address }} <br>
+                                    {{ $infant->foreign_household->second_address }}
+                                @else
+                                    N/A
+                                @endif
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -160,39 +183,39 @@
                     <div class="tab-content" id="nav-tabContent">
                         
                         <!-- Overview tab -->
-                        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel">
+                        <div class="tab-pane fade {{ session('activeTab') ? '' : 'show active' }}" id="nav-overview" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.overview')
                             </div>
                         </div>
 
                         <!-- Newborn tab -->
-                        <div class="tab-pane fade" id="nav-newborn" role="tabpanel">
+                        <div class="tab-pane fade {{ session('activeTab') == 'newborn' ? 'show active' : '' }}" id="nav-newborn" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.newborn')
                             </div>
                         </div>
 
                         <!-- 1-3 months tab -->
-                        <div class="tab-pane fade" id="nav-1-3" role="tabpanel">
+                        <div class="tab-pane fade {{ session('activeTab') == 'months_1_3' ? 'show active' : '' }}" id="nav-1-3" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.months_1_3')
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="nav-6-11" role="tabpanel">
+                        <div class="tab-pane fade {{ session('activeTab') == 'months_6_11' ? 'show active' : '' }}" id="nav-6-11" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.months_6_11')
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="nav-12" role="tabpanel">
+                        <div class="tab-pane fade {{ session('activeTab') == 'months_12' ? 'show active' : '' }}" id="nav-12" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.months_12')
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="nav-monitoring" role="tabpanel">
+                        <div class="tab-pane fade {{ session('activeTab') == 'monitoring' ? 'show active' : '' }}" id="nav-monitoring" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.monitoring')
                             </div>

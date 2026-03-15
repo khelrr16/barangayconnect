@@ -54,14 +54,14 @@
                 <div class="collapse" id="rbiSubmenu">
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
-                            <a href="{{ route('resident.index') }}" class="nav-link">
+                            <a href="{{ route('admin.resident.index') }}" class="nav-link">
                                 <i class="fa-solid fa-users"></i>
                                 <span class="nav-text">RESIDENTS</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('household.index') }}" class="nav-link">
+                            <a href="{{ route('admin.household.index') }}" class="nav-link">
                                 <i class="fa-solid fa-house"></i>
                                 <span class="nav-text">HOUSEHOLDS</span>
                             </a>
@@ -120,14 +120,8 @@
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a href="" class="nav-link">
-                                <i class="fa-solid fa-syringe"></i>
+                                <i class="fa-solid fa-shield-virus"></i>
                                 <span class="nav-text">Immunization for Infants</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="" class="nav-link">
-                                <i class="fa-solid fa-stethoscope"></i>
-                                <span class="nav-text">Medical Checkups</span>
                             </a>
                         </li>
                         <li class="nav-item">

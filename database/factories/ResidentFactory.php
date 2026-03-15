@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Household;
+use App\Models\Admin\Household;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Resident>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin\Resident>
  */
 class ResidentFactory extends Factory
 {

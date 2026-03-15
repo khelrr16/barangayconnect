@@ -6,7 +6,7 @@
     <div class="container-fluid mt-4">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('admin.rbi.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('admin.resident.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
@@ -81,7 +81,7 @@
                                 </td>
                                 <td>
                                     @if($import->failed_rows > 0)
-                                        <a href="{{ route('admin.rbi.upload.failed', $import->id) }}" class="btn btn-danger btn-sm">FAILED RECORDS</a>
+                                        <a href="{{ route('admin.resident.upload.failed', $import->id) }}" class="btn btn-danger btn-sm">FAILED RECORDS</a>
                                     @endif
                                 </td>
                             </tr>
@@ -116,8 +116,8 @@
             const progressWrapper = document.getElementById('csvImportProgressWrapper');
             const progressBar = document.getElementById('csvImportProgressBar');
             const progressText = document.getElementById('csvImportProgressText');
-            const statusUrlTemplate = "{{ route('admin.rbi.upload.status', ['importId' => '__IMPORT_ID__']) }}";
-            const uploadUrl = "{{ route('admin.rbi.upload.csv') }}";
+            const statusUrlTemplate = "{{ route('admin.resident.upload.status', ['importId' => '__IMPORT_ID__']) }}";
+            const uploadUrl = "{{ route('admin.resident.upload.csv') }}";
 
             const setProgress = (percentage, text, isError = false) => {
                 const safePercentage = Math.max(0, Math.min(100, Number(percentage) || 0));

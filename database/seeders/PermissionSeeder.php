@@ -21,11 +21,8 @@ class PermissionSeeder extends Seeder
             'manage users',
             'manage user_permissions',
 
-            'view residents',
-            'manage residents',
-
-            'view households',
-            'manage households',
+            'view rbi',
+            'manage rbi',
 
             'view officials',
             'manage officials',
@@ -72,22 +69,6 @@ class PermissionSeeder extends Seeder
             'manage committee_reports',
             'view committee_anouncements',
             'manage committee_anouncements',
-            'view residents',
-            'view households',
-        ]);
-
-        $committeeMemberRole = Role::firstOrCreate([
-            'name' => 'committee_member',
-            'guard_name' => $guardName,
-        ]);
-
-        $committeeMemberRole->syncPermissions([
-            'view committee_projects',
-            'manage committee_projects',
-            'view committee_reports',
-            'manage committee_reports',
-            'view committee_anouncements',
-            'manage committee_anouncements',
         ]);
 
         $clerkRole = Role::firstOrCreate([
@@ -99,8 +80,6 @@ class PermissionSeeder extends Seeder
             'view admin_dashboard',
             'view committee_dashboard',
             'view clerk_dashboard',
-            'view residents',
-            'view households',
         ]);
 
         $adminRole = Role::firstOrCreate([

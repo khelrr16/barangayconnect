@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Health\Infant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,8 @@ class Household extends Model
         'household_no',
         'blk_lot_unit',
         'household_head',
+        'first_address',
+        'second_address',
     ];
     
     protected $fillable = [
@@ -44,6 +47,20 @@ class Household extends Model
         return $this->head ? $this->head->full_name : 'N/A';
     }
 
+    public function getFirstAddressAttribute()
+    {
+        $address = $this->getBlkLotUnitAttribute();
+        $address .= ", {$this->street}, {$this->subdivision}";
+        return $address;
+    }
+
+    public function getSecondAddressAttribute()
+    {
+        $address = "Brgy. San Lorenzo, San Pedro City, Laguna";
+
+        return $address;
+    }
+
     public function head()
     {
         return $this->hasOne(Resident::class, 'household_id')->where('role', 'head');
@@ -52,5 +69,10 @@ class Household extends Model
     public function residents()
     {
         return $this->hasMany(Resident::class, 'household_id');
+    }
+
+    public function infants()
+    {
+        return $this->hasMany(Infant::class, 'household_id');
     }
 }

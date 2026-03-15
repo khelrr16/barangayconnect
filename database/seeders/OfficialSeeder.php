@@ -15,9 +15,9 @@ class OfficialSeeder extends Seeder
     public function run(): void
     {
         Official::create([
-            'name' => 'Ada Wong',
+            'name' => 'Hitler',
             'position' => 'Kagawad',
-            'committee_id' => 2,
+            'committee_id' => 3,
             'term_start' => now(),
             'term_end' => now(),
         ]);

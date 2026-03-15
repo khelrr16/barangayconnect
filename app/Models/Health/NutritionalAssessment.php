@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Health;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,10 +11,15 @@ class NutritionalAssessment extends Model
 
     protected $fillable = [
         'infant_id',
-        'age_category',
-        'age_in_months',
+        'category',
+        'age',
         'weight',
         'length',
         'status',
+        'assessment_date',
+    ];
+
+    protected $casts = [
+        'assessment_date' => 'date',
     ];
 }

@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('immunizations', function (Blueprint $table) {
+        Schema::create('medicines', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('infant_id')->constrained();
-            $table->foreignId('vaccine_id')->constrained('vaccinations');
-            $table->date('administration_date');
-
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->string('type')->nullable(); //Vaccine, Vitamin,
+            $table->string('dose_volume')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('immunizations');
+        Schema::dropIfExists('medicines');
     }
 };

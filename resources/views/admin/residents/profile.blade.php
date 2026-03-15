@@ -6,7 +6,7 @@
     <div class="container py-4">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('resident.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('admin.resident.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
@@ -27,11 +27,11 @@
             @can('manage residents')
             <div>
                 
-                <a class="btn btn-outline-secondary me-2" href="{{ route('resident.edit', $resident->id) }}">
+                <a class="btn btn-outline-secondary me-2" href="{{ route('admin.resident.edit', $resident->id) }}">
                     <i class="fa-solid fa-pencil"></i>
                 </a>
                 
-                <form method="POST" action="{{ route('resident.destroy', $resident->id) }}" class="d-inline" onsubmit="return confirm('Delete this resident?');">
+                <form method="POST" action="{{ route('admin.resident.destroy', $resident->id) }}" class="d-inline" onsubmit="return confirm('Delete this resident?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">

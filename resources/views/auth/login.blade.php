@@ -288,10 +288,14 @@
 
                     <!-- Remember Me & Forgot Password -->
                     <div class="remember-forgot">
-                        <div class="remember-me">
+                        <!-- <div class="remember-me">
                             <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                             <label for="remember">Remember me</label>
-                        </div>
+                        </div> -->
+                        <a href="{{ route('password.request') }}" class="forgot-password">
+                            Register
+                        </a>
+
                         <a href="{{ route('password.request') }}" class="forgot-password">
                             Forgot Password?
                         </a>

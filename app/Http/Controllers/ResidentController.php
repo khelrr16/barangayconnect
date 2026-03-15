@@ -23,63 +23,12 @@ class ResidentController extends Controller
             ->orderBy('first_name')
             ->get();
 
-        return view('residents.index', compact('residents'));
+        return view('admin.residents.index', compact('residents'));
     }
-
-    public function printable(Request $request)
-    {
-        $categories = [
-            'sex' => 'Sex',
-            'civil_status' => 'Civil Status',
-            'registered_voter' => 'Registered Voter',
-            'employment_status' => 'Employment Status',
-            'monthly_income' => 'Monthly Income',
-            'role' => 'Relationship to Head',
-        ];
-
-        $selectedCategory = (string) $request->input('category', '');
-        if (!array_key_exists($selectedCategory, $categories)) {
-            $selectedCategory = '';
-        }
-
-        $selectedValue = (string) $request->input('value', '');
-
-        $query = Resident::query()->with('household');
-
-        $values = [];
-        if ($selectedCategory !== '') {
-            $values = Resident::query()
-                ->whereNotNull($selectedCategory)
-                ->where($selectedCategory, '!=', '')
-                ->distinct()
-                ->orderBy($selectedCategory)
-                ->pluck($selectedCategory)
-                ->values()
-                ->all();
-
-            if ($selectedValue !== '') {
-                $query->where($selectedCategory, $selectedValue);
-            }
-        }
-
-        $residents = $query
-            ->orderBy('last_name')
-            ->orderBy('first_name')
-            ->get();
-
-        return view('residents.printable', compact(
-            'residents',
-            'categories',
-            'values',
-            'selectedCategory',
-            'selectedValue'
-        ));
-    }
-
     public function show($resident_id)
     {
         $resident = Resident::with(['household','household.head','commOrgs','programs','healthProfile'])->findOrFail($resident_id);
-        return view('residents.profile', compact('resident'));
+        return view('admin.residents.profile', compact('resident'));
     }
 
     public function edit($resident_id)
@@ -91,7 +40,7 @@ class ResidentController extends Controller
             ->get()
             ->keyBy('id');
 
-        return view('residents.edit', compact('resident', 'programs', 'residentPrograms'));
+        return view('admin.residents.edit', compact('resident', 'programs', 'residentPrograms'));
     }
 
     public function update(Request $request, $resident_id)
@@ -281,7 +230,7 @@ class ResidentController extends Controller
         $programs = Program::where('is_active', 1)->get();
         $prefillAddress = $request->only(['subdivision', 'street', 'block', 'lot', 'unit']);
 
-        return view('residents.create', compact('programs', 'prefillAddress'));
+        return view('admin.residents.create', compact('programs', 'prefillAddress'));
     }
 
     public function store(StoreResidentRequest $request)

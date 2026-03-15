@@ -38,7 +38,7 @@
                                 <td>{{ $official->term_end->format('M d, Y') }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2 text-center">
-                                        <button type="button" class="btn btn-primarybtn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $official->id }}">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $official->id }}">
                                             EDIT
                                         </button>
 

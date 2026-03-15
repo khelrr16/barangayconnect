@@ -123,7 +123,7 @@
                                     <td>{{ $resident->role ?? 'N/A' }}</td>
                                     <td>{{ $resident->ownership ?? 'N/A' }}</td>
                                     <td>
-                                        <a href="{{ route('admin.rbi.show', $resident->id) }}" class="btn btn-sm btn-outline-warning link-warning">
+                                        <a href="{{ route('resident.show', $resident->id) }}" class="btn btn-sm btn-outline-warning link-warning">
                                             <i class="fa-solid fa-user"></i>
                                         </a>
                                     </td>
@@ -134,7 +134,7 @@
                 </div>
 
                 <!-- Add Row Button -->
-                <a class="btn btn-warning mt-2" href="{{ route('admin.rbi.create', ['subdivision' => $household->subdivision, 'street' => $household->street, 'block' => $household->block, 'lot' => $household->lot, 'unit' => $household->unit]) }}">
+                <a class="btn btn-warning mt-2" href="{{ route('resident.create', ['subdivision' => $household->subdivision, 'street' => $household->street, 'block' => $household->block, 'lot' => $household->lot, 'unit' => $household->unit]) }}">
                     <i class="fa-solid fa-user-plus"></i> Add Member Row
                 </a>
 

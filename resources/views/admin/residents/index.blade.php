@@ -7,9 +7,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-3">Registry of Brgy. Inhabitants (RBI)</h4>
             <div>
-                <!-- <a href="{{ route('resident.printable') }}" class="btn btn-outline-secondary">PRINTABLE</a> -->
-                <a href="{{ route('resident.upload.index') }}" class="btn btn-warning">UPLOAD CSV</a>
-                <a href="{{ route('resident.create') }}" class="btn btn-primary">+ NEW</a>
+                <a href="{{ route('admin.resident.upload.index') }}" class="btn btn-warning">UPLOAD CSV</a>
+                <a href="{{ route('admin.resident.create') }}" class="btn btn-primary">+ NEW</a>
             </div>
         </div>
         
@@ -45,18 +44,18 @@
                                 <td>{{ $resident->sex }}</td>
                                 <td>{{ $resident->age }}</td>
                                 <td>
-                                    <a href="{{ route('household.show', $resident->household->id) }}" target="_blank">
+                                    <a href="{{ route('admin.household.show', $resident->household->id) }}" target="_blank">
                                         {{ $resident->household->household_no }}
                                     </a>
                                 </td>
                                 <td>{{ $resident->role }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2 text-center">
-                                        <a href="{{ route('resident.show', $resident->id) }}" class="btn btn-primary btn-sm">VIEW</a>
+                                        <a href="{{ route('admin.resident.show', $resident->id) }}" class="btn btn-primary btn-sm">VIEW</a>
                                         @can('manage residents')
                                         @if(!$resident->trashed())
-                                            <a href="{{ route('resident.edit', $resident->id) }}" class="btn btn-warning btn-sm">EDIT</a>
-                                            <form method="POST" action="{{ route('resident.destroy', $resident->id) }}" class="d-inline" onsubmit="return confirm('Confirm Delete?');">
+                                            <a href="{{ route('admin.resident.edit', $resident->id) }}" class="btn btn-warning btn-sm">EDIT</a>
+                                            <form method="POST" action="{{ route('admin.resident.destroy', $resident->id) }}" class="d-inline" onsubmit="return confirm('Confirm Delete?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
