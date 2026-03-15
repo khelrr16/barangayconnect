@@ -19,6 +19,10 @@ class Resident extends Model
         'length_of_stay',
     ];
 
+    protected $casts = [
+        'birthday' => 'date',
+    ];
+
     protected $fillable = [
         'last_name',
         'first_name',
@@ -103,5 +107,10 @@ class Resident extends Model
     public function healthProfile()
     {
         return $this->hasMany(HealthProfile::class, 'resident_id');
+    }
+
+    public function certificateRequests()
+    {
+        return $this->hasMany(CertificateRequest::class);
     }
 }

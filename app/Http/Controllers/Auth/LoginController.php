@@ -40,6 +40,8 @@ class LoginController extends Controller
             return redirect()->intended(route('clerk.dashboard'));
         } elseif ($user->hasRole('committee_head')) {
             return redirect()->intended(route('committee.dashboard'));
+        } elseif ($user->hasRole('resident')) {
+            return redirect()->intended(route('resident.dashboard'));
         }
 
         return redirect()->intended(route('dashboard'));
@@ -158,6 +160,8 @@ class LoginController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        $user->assignRole('resident');
 
         return redirect()->route('login')->with('status', 'Account created successfully. You can now sign in.');
     }

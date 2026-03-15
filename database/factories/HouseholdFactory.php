@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin\Household>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Household>
  */
 class HouseholdFactory extends Factory
 {
@@ -18,9 +18,9 @@ class HouseholdFactory extends Factory
             'unit' => null,
             'street' => $this->faker->streetName(),
             'subdivision' => $this->faker->randomElement([
-                'Conpil I Village', 
-                'Conpil III Executive', 
-                'Console 1 Village', 
+                'Conpil I Village',
+                'Conpil III Executive',
+                'Console 1 Village',
                 'Greatland Village',
                 'Guevara Subdivision',
                 'Pacita 2A',

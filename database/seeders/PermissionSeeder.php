@@ -88,5 +88,10 @@ class PermissionSeeder extends Seeder
         ]);
 
         $adminRole->syncPermissions($allPermissions);
+
+        Role::firstOrCreate([
+            'name' => 'resident',
+            'guard_name' => $guardName,
+        ]);
     }
 }

@@ -1,7 +1,10 @@
 <?php
 
 
+use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\CertificateRequestController;
 use App\Http\Controllers\Admin\CommitteeController;
+use App\Http\Controllers\Admin\ResidentLinkVerificationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OfficialController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -15,6 +18,7 @@ use App\Http\Controllers\Health\MedicineController;
 use App\Http\Controllers\Health\NutritionalAssessmentController;
 use App\Http\Controllers\Home\LandingController;
 use App\Http\Controllers\HouseholdController;
+use App\Http\Controllers\Resident\PortalController as ResidentPortalController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\ResidentUploadController;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +86,34 @@ Route::middleware('auth')->group(function () {
 
         Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
         Route::patch('roles-permissions/{role}', [RolePermissionController::class, 'update'])->name('roles-permissions.update');
+
+        Route::get('certificate-requests', [CertificateRequestController::class, 'index'])->name('certificate-requests.index');
+        Route::get('certificate-requests/{certificate_request}', [CertificateRequestController::class, 'show'])->name('certificate-requests.show');
+        Route::patch('certificate-requests/{certificate_request}', [CertificateRequestController::class, 'update'])->name('certificate-requests.update');
+
+        Route::get('verification-requests', [ResidentLinkVerificationController::class, 'index'])->name('verification-requests.index');
+        Route::get('verification-requests/{verification}', [ResidentLinkVerificationController::class, 'show'])->name('verification-requests.show');
+        Route::patch('verification-requests/{verification}/approve', [ResidentLinkVerificationController::class, 'approve'])->name('verification-requests.approve');
+        Route::patch('verification-requests/{verification}/reject', [ResidentLinkVerificationController::class, 'reject'])->name('verification-requests.reject');
+
+        Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+        Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+        Route::patch('announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+    });
+
+    // Resident portal
+    Route::middleware(['role:resident'])->prefix('resident')->name('resident.')->group(function () {
+        Route::get('/', [ResidentPortalController::class, 'index'])->name('dashboard');
+        Route::get('/profile', [ResidentPortalController::class, 'profile'])->name('profile');
+        Route::post('/profile/send-verification', [ResidentPortalController::class, 'sendVerification'])->name('profile.send-verification');
+        Route::get('/request-document', [ResidentPortalController::class, 'requestDocument'])->name('request-document');
+        Route::post('/request-document', [ResidentPortalController::class, 'storeDocumentRequest'])->name('request-document.store');
+        Route::get('/my-requests', [ResidentPortalController::class, 'myRequests'])->name('my-requests');
+        Route::get('/announcements', [ResidentPortalController::class, 'announcements'])->name('announcements');
+        Route::get('/contact', [ResidentPortalController::class, 'contact'])->name('contact');
     });
 
     //Committees

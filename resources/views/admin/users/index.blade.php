@@ -82,13 +82,22 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 official-field">
                             <label for="official" class="form-label">Officials</label>
-                            <select class="form-select committee" id="official" name="official_id" required>
-                                <option value="" selected disabled>--</option>
+                            <select class="form-select" id="official" name="official_id">
+                                <option value="" selected>--</option>
                                 @foreach($officials as $official)
-                                    <option value="{{ $official->id }}" {{ $user->official_id == $official->id ? 'selected' : '' }}>
-                                        {{ $official->name }}
+                                    <option value="{{ $official->id }}">{{ $official->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 resident-field">
+                            <label for="resident_id" class="form-label">Link to Resident</label>
+                            <select class="form-select" id="resident_id" name="resident_id">
+                                <option value="">-- None --</option>
+                                @foreach($residents as $r)
+                                    <option value="{{ $r->id }}" {{ old('resident_id') == $r->id ? 'selected' : '' }}>
+                                        {{ $r->full_name }} ({{ $r->rbi_no }})
                                     </option>
                                 @endforeach
                             </select>
@@ -142,13 +151,24 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-3 official-field">
                                 <label for="official-{{ $user->id }}" class="form-label">Officials</label>
-                                <select class="form-select" id="official-{{ $user->id }}" name="official_id" required>
-                                    <option value="" selected disabled>--</option>
+                                <select class="form-select" id="official-{{ $user->id }}" name="official_id">
+                                    <option value="">--</option>
                                     @foreach($officials as $official)
                                         <option value="{{ $official->id }}" {{ $user->official_id == $official->id ? 'selected' : '' }}>
                                             {{ $official->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 resident-field">
+                                <label for="resident_id-{{ $user->id }}" class="form-label">Link to Resident</label>
+                                <select class="form-select" id="resident_id-{{ $user->id }}" name="resident_id">
+                                    <option value="">-- None --</option>
+                                    @foreach($residents as $r)
+                                        <option value="{{ $r->id }}" {{ $user->resident_id == $r->id ? 'selected' : '' }}>
+                                            {{ $r->full_name }} ({{ $r->rbi_no }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -189,35 +209,24 @@
             const roleSelects = document.querySelectorAll('.selectRole[name="role"]');
             
             roleSelects.forEach(function(roleSelect) {
-                // Find the corresponding committee select (in the same parent container or using a specific selector)
-                const container = roleSelect.closest('.mb-3').parentNode;
-                const committeeDiv = container.querySelector('.mb-3:has([name="official_id"])');
-                const committeeSelect = container.querySelector('[name="official_id"]');
+                const container = roleSelect.closest('.modal-body');
+                const officialDiv = container.querySelector('.official-field');
+                const officialSelect = container.querySelector('[name="official_id"]');
+                const residentDiv = container.querySelector('.resident-field');
+                const residentSelect = container.querySelector('[name="resident_id"]');
                 
-                // Initial check
-                toggleCommittee(roleSelect, committeeDiv, committeeSelect);
-                
-                // Add event listener for change
-                roleSelect.addEventListener('change', function() {
-                    toggleCommittee(this, committeeDiv, committeeSelect);
-                });
-            });
-            
-            function toggleCommittee(roleSelect, committeeDiv, committeeSelect) {
-                // Check if selected role is "Committee Head"
-                if (roleSelect.value === 'Committee Head' || roleSelect.value === 'committee_head') {
-                    // Show and enable committee
-                    committeeDiv.style.display = 'block';
-                    committeeSelect.disabled = false;
-                    committeeSelect.required = true;
-                } else {
-                    // Hide and disable committee
-                    committeeDiv.style.display = 'none';
-                    committeeSelect.disabled = true;
-                    committeeSelect.required = false;
-                    committeeSelect.value = ''; // Reset value
+                function toggle() {
+                    const isCommitteeHead = roleSelect.value === 'committee_head';
+                    const isResident = roleSelect.value === 'resident';
+                    officialDiv.style.display = isCommitteeHead ? 'block' : 'none';
+                    officialSelect.required = isCommitteeHead;
+                    officialSelect.disabled = !isCommitteeHead;
+                    if (!isCommitteeHead) officialSelect.value = '';
+                    residentDiv.style.display = isResident ? 'block' : 'none';
                 }
-            }
+                toggle();
+                roleSelect.addEventListener('change', toggle);
+            });
         });
     </script>
 @endpush

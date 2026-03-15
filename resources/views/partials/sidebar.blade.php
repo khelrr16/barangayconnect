@@ -4,7 +4,7 @@
     </div>
 
     <nav class="sidebar-nav">
-        
+
 
         <ul class="nav-menu">
             @if(Auth::user()->hasRole('admin'))
@@ -69,7 +69,14 @@
                     </ul>
                 </div>
             </li>
-            
+
+            <li class="nav-item">
+                <a href="{{ route('admin.certificate-requests.index') }}" class="nav-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span class="nav-text">CERTIFICATE REQUESTS</span>
+                </a>
+            </li>
+
 
             @can('view officials')
             <li class="nav-item">
@@ -94,6 +101,24 @@
                 <a href="{{ route('admin.users.index') }}" class="nav-link">
                     <i class="fa-solid fa-user-gear"></i>
                     <span class="nav-text">USER ACCOUNTS</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('manage users')
+            <li class="nav-item">
+                <a href="{{ route('admin.verification-requests.index') }}" class="nav-link">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span class="nav-text">LINK VERIFICATION REQUESTS</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('manage users')
+            <li class="nav-item">
+                <a href="{{ route('admin.announcements.index') }}" class="nav-link">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span class="nav-text">ANNOUNCEMENTS</span>
                 </a>
             </li>
             @endcan
