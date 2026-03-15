@@ -26,7 +26,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [LoginController::class, 'register']);
+    Route::post('/register', [LoginController::class, 'registerStore'])->name('register.store');
     Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [LoginController::class, 'sendResetCode'])->name('password.email');
     Route::get('/reset-password', [LoginController::class, 'showResetPasswordForm'])->name('password.reset');
@@ -72,7 +72,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/resident/{resident}', [ResidentController::class, 'destroy'])->name('resident.destroy');
         Route::get('/resident/{resident}/edit', [ResidentController::class, 'edit'])->name('resident.edit');
         Route::patch('resident/{resident}/restore', [ResidentController::class, 'restore'])->name('resident.restore');
-        
+
 
         //Manage households
         Route::middleware('permission:view households')->group(function () {
@@ -106,7 +106,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/medicine/{medicine}', [MedicineController::class, 'show'])->name('medicine.show');
             Route::delete('/medicine/{medicine}', [MedicineController::class, 'destroy'])->name('medicine.destroy');
             Route::get('/medicine/create', [MedicineController::class, 'create'])->name('medicine.create');
-            
+
             Route::post('/medicine/batch/create', [MedicineBatchController::class, 'store'])->name('medicine.batch.store');
         });
     });

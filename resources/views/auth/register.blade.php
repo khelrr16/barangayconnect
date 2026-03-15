@@ -242,21 +242,21 @@
                 <!-- Lockout Timer -->
                 @if(session('lockout_time'))
                     <div class="alert alert-warning">
-                        Too many login attempts. Please try again in 
+                        Too many login attempts. Please try again in
                         <span id="timer">{{ session('lockout_time') }}</span> seconds.
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                <form method="POST" action="{{ route('register.store') }}" id="loginForm">
                     @csrf
 
                     <!-- Email Field -->
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="name" 
-                               id="name" 
-                               name="name" 
-                               value="{{ old('name') }}" 
+                        <input type="name"
+                               id="name"
+                               name="name"
+                               value="{{ old('name') }}"
                                class="@error('name') is-invalid @enderror"
                                required
                                placeholder="Enter your name">
@@ -268,12 +268,12 @@
                     <!-- Email Field -->
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" 
-                               id="email" 
-                               name="email" 
-                               value="{{ old('email') }}" 
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               value="{{ old('email') }}"
                                class="@error('email') is-invalid @enderror"
-                               required 
+                               required
                                placeholder="Enter your email">
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -283,9 +283,9 @@
                     <!-- Password Field -->
                     <div class="form-group password-group">
                         <label for="password">Password</label>
-                        <input type="password" 
-                               id="password" 
-                               name="password" 
+                        <input type="password"
+                               id="password"
+                               name="password"
                                class="@error('password') is-invalid @enderror"
                                required
                                placeholder="Enter your password">
@@ -297,19 +297,19 @@
                         @enderror
                     </div>
 
-                    <!-- Password Field -->
+                    <!-- Confirm Password Field -->
                     <div class="form-group password-group">
-                        <label for="password">Password</label>
-                        <input type="password" 
-                            id="password" 
-                            name="password" 
-                            class="@error('password') is-invalid @enderror"
+                        <label for="password_confirmation">Confirm Password</label>
+                        <input type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            class="@error('password_confirmation') is-invalid @enderror"
                             required
-                            placeholder="Enter your password">
-                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
-                            <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
+                            placeholder="Confirm your password">
+                        <button type="button" class="password-toggle" id="togglePasswordConfirmation" aria-label="Show confirm password">
+                            <i class="fa-regular fa-eye-slash" id="eyeIconConfirmation"></i>
                         </button>
-                        @error('password')
+                        @error('password_confirmation')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -337,7 +337,7 @@
 
                 <!-- Demo Credentials (Remove in production) -->
                 <!-- <div class="login-footer">
-                    
+
                 </div> -->
             </div>
         </div>
@@ -355,11 +355,11 @@
         @if(session('lockout_time'))
             let seconds = {{ session('lockout_time') }};
             const timerElement = document.getElementById('timer');
-            
+
             const countdown = setInterval(function() {
                 seconds--;
                 timerElement.textContent = seconds;
-                
+
                 if (seconds <= 0) {
                     clearInterval(countdown);
                     location.reload(); // Refresh page to enable login
@@ -375,17 +375,30 @@
             }, 300);
         @endif
 
-        // Password show/hide toggle
+        // Password show/hide toggles
         const togglePassword = document.getElementById('togglePassword');
         const passwordField = document.getElementById('password');
         const eyeIcon = document.getElementById('eyeIcon');
-        
-        togglePassword.addEventListener('click', function() {
-            const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-            eyeIcon.className = type === 'password' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
-            togglePassword.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
-        });
+        const togglePasswordConfirmation = document.getElementById('togglePasswordConfirmation');
+        const passwordConfirmationField = document.getElementById('password_confirmation');
+        const eyeIconConfirmation = document.getElementById('eyeIconConfirmation');
+
+        if (togglePassword && passwordField && eyeIcon) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordField.type === 'password' ? 'text' : 'password';
+                passwordField.type = type;
+                eyeIcon.className = type === 'password' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+                togglePassword.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+            });
+        }
+        if (togglePasswordConfirmation && passwordConfirmationField && eyeIconConfirmation) {
+            togglePasswordConfirmation.addEventListener('click', function() {
+                const type = passwordConfirmationField.type === 'password' ? 'text' : 'password';
+                passwordConfirmationField.type = type;
+                eyeIconConfirmation.className = type === 'password' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+                togglePasswordConfirmation.setAttribute('aria-label', type === 'password' ? 'Show confirm password' : 'Hide confirm password');
+            });
+        }
     </script>
     @include('partials.loading-screen')
 </body>
