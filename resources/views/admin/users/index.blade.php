@@ -73,22 +73,19 @@
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Role</label>
-                            <select class="form-select selectRole" id="role" name="role" required>
+                            <select class="form-select selectRole" id="role" name="role" required data-official-target="official">
                                 <option value="" disabled selected>--</option>
                                 @foreach($roles as $role)
-                                    <option value="{{ $role->name }}">
-                                        {{ ucwords(str_replace('_', ' ',$role->name)) }}
+                                    <option value="{{ $role->name }}" data-committee-id="{{ $role->committee_id ?? '' }}">
+                                        {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3 official-field">
                             <label for="official" class="form-label">Officials</label>
-                            <select class="form-select" id="official" name="official_id">
-                                <option value="" selected>--</option>
-                                @foreach($officials as $official)
-                                    <option value="{{ $official->id }}">{{ $official->name }}</option>
-                                @endforeach
+                            <select class="form-select official-select" id="official" name="official_id">
+                                <option value="">--</option>
                             </select>
                         </div>
                         <div class="mb-3 resident-field">
@@ -142,24 +139,19 @@
                             </div>
                             <div class="mb-3">
                                 <label for="role-{{ $user->id }}" class="form-label">Role</label>
-                                <select class="form-select selectRole" id="role-{{ $user->id }}" name="role" required>
+                                <select class="form-select selectRole" id="role-{{ $user->id }}" name="role" required data-official-target="official-{{ $user->id }}">
                                     <option value="" disabled>--</option>
                                     @foreach($roles as $role)
-                                        <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                                            {{ ucwords(str_replace('_', ' ',$role->name)) }}
+                                        <option value="{{ $role->name }}" data-committee-id="{{ $role->committee_id ?? '' }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                                            {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="mb-3 official-field">
                                 <label for="official-{{ $user->id }}" class="form-label">Officials</label>
-                                <select class="form-select" id="official-{{ $user->id }}" name="official_id">
+                                <select class="form-select official-select" id="official-{{ $user->id }}" name="official_id" data-initial-official-id="{{ $user->official_id ?? '' }}">
                                     <option value="">--</option>
-                                    @foreach($officials as $official)
-                                        <option value="{{ $official->id }}" {{ $user->official_id == $official->id ? 'selected' : '' }}>
-                                            {{ $official->name }}
-                                        </option>
-                                    @endforeach
                                 </select>
                             </div>
                             <div class="mb-3 resident-field">
@@ -196,7 +188,8 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let progressInterval = null;
+            const officialsByCommittee = @json($officialsByCommittee ?? []);
+            const allOfficials = @json($officials->map(fn ($o) => ['id' => $o->id, 'name' => $o->name, 'committee_id' => $o->committee_id])->values());
 
             if (window.DataTable) {
                 new window.DataTable('#sortTable', {
@@ -207,23 +200,53 @@
             }
 
             const roleSelects = document.querySelectorAll('.selectRole[name="role"]');
-            
+
             roleSelects.forEach(function(roleSelect) {
                 const container = roleSelect.closest('.modal-body');
                 const officialDiv = container.querySelector('.official-field');
                 const officialSelect = container.querySelector('[name="official_id"]');
                 const residentDiv = container.querySelector('.resident-field');
-                const residentSelect = container.querySelector('[name="resident_id"]');
-                
+
+                function getSelectedCommitteeId() {
+                    const opt = roleSelect.options[roleSelect.selectedIndex];
+                    return opt ? opt.getAttribute('data-committee-id') : null;
+                }
+
+                function isCommitteeRole() {
+                    if (!roleSelect.value) return false;
+                    const committeeId = getSelectedCommitteeId();
+                    return committeeId !== null && committeeId !== '' || roleSelect.value === 'committee_head';
+                }
+
+                function populateOfficials() {
+                    const prevValue = officialSelect.value || officialSelect.getAttribute('data-initial-official-id') || '';
+                    const committeeId = getSelectedCommitteeId();
+                    const options = [{ id: '', name: '--' }];
+                    if (committeeId && officialsByCommittee[committeeId]) {
+                        options.push(...officialsByCommittee[committeeId]);
+                    } else if (roleSelect.value === 'committee_head') {
+                        options.push(...allOfficials);
+                    }
+                    officialSelect.innerHTML = options.map(o => '<option value="' + o.id + '">' + (o.name || '--') + '</option>').join('');
+                    if (prevValue && options.some(o => String(o.id) === String(prevValue))) {
+                        officialSelect.value = prevValue;
+                    }
+                }
+
                 function toggle() {
-                    const isCommitteeHead = roleSelect.value === 'committee_head';
+                    const isCommittee = isCommitteeRole();
                     const isResident = roleSelect.value === 'resident';
-                    officialDiv.style.display = isCommitteeHead ? 'block' : 'none';
-                    officialSelect.required = isCommitteeHead;
-                    officialSelect.disabled = !isCommitteeHead;
-                    if (!isCommitteeHead) officialSelect.value = '';
+                    officialDiv.style.display = isCommittee ? 'block' : 'none';
+                    officialSelect.required = isCommittee;
+                    officialSelect.disabled = !isCommittee;
+                    if (isCommittee) {
+                        populateOfficials();
+                    } else {
+                        officialSelect.value = '';
+                    }
                     residentDiv.style.display = isResident ? 'block' : 'none';
                 }
+
                 toggle();
                 roleSelect.addEventListener('change', toggle);
             });

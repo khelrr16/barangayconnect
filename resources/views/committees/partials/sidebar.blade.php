@@ -76,6 +76,33 @@
                 </a>
             </li>
             @endcan
+
+            @can('view budget_finance')
+            <li class="nav-item">
+                <a href="{{ route('committee.budget.index') }}" class="nav-link">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="nav-text">Budget Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('committee.disbursements.index') }}" class="nav-link">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <span class="nav-text">Disbursements</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('committee.fund-sources.index') }}" class="nav-link">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                    <span class="nav-text">Fund Sources</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('committee.reports.index') }}" class="nav-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span class="nav-text">Financial Reports</span>
+                </a>
+            </li>
+            @endcan
         </ul>
     </nav>
 
