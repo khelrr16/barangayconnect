@@ -64,15 +64,21 @@
 
             @can('view health_sanitation')
             <li class="nav-item">
+                <a href="{{ route('committee.health.dashboard') }}" class="nav-link">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="nav-text">HEALTH DASHBOARD</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('committee.immunization.index') }}" class="nav-link">
                     <i class="fa-solid fa-syringe"></i>
-                    <span class="nav-text">Immunization for Infants</span>
+                    <span class="nav-text">IMMUNIZATION FOR INFANTS</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('committee.medicine.index') }}" class="nav-link">
                     <i class="fa-solid fa-tablets"></i>
-                    <span class="nav-text">Medicine Inventory</span>
+                    <span class="nav-text">MEDICINE INVENTORY</span>
                 </a>
             </li>
             @endcan

@@ -21,6 +21,10 @@ class CheckCommittee
             return $next($request);
         }
 
+        if (!$user->official || !$user->official->committee) {
+            abort(403, 'Unauthorized access.');
+        }
+
         foreach ($committees as $committee) {
             if ($user->official->committee->slug === $committee) {
                 return $next($request);

@@ -55,6 +55,12 @@ class PermissionSeeder extends Seeder
             ->where('guard_name', $guardName)
             ->pluck('name');
 
+        $residentRole = Role::firstOrCreate([
+            'name' => 'resident',
+            'guard_name' => $guardName,
+        ]);
+
+
         // Create roles and assign permissions
         $committeeHeadRole = Role::firstOrCreate([
             'name' => 'committee_head',
