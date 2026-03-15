@@ -6,9 +6,9 @@
     <div class="container-fluid mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-3">Immunization for Infants</h4>
-            <a href="{{ route('committee.infant.create') }}" class="btn btn-primary">+ NEW</a>
+            <a href="{{ route('committee.health.infant.create') }}" class="btn btn-primary">+ NEW</a>
         </div>
-        
+
         <div class="card shadow-sm card-custom">
             @if($infants->isNotEmpty())
             <div class="table-responsive">
@@ -40,7 +40,7 @@
                             <td>{{ $infant->created_at->format('M j, Y') }} </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2 text-center">
-                                    <a href="{{ route('committee.immunization.show', $infant->id) }}" class="btn btn-primary btn-sm">VIEW</a>
+                                    <a href="{{ route('committee.health.immunization.show', $infant->id) }}" class="btn btn-primary btn-sm">VIEW</a>
                                 </div>
                             </td>
                         </tr>

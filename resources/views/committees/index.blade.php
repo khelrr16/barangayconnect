@@ -3,11 +3,19 @@
 @section('title', 'Committees')
 
 @section('content')
+    @php
+        $links = [
+            'health_sanitation' => 'health',
+            'peace_order' => 'peace',
+            'budget_finance' => 'budget',
+        ];
+    @endphp
+
     <div class="container-fluid mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-3">Committees</h4>
         </div>
-        
+
         <div class="card shadow-sm card-custom">
             @if($committees->isNotEmpty())
             <div class="table-responsive">
@@ -29,6 +37,15 @@
                                 <td>{{ $committee->description ?? 'N/A' }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2 text-center">
+                                        @if(array_key_exists($committee->slug, $links))
+                                            <a href="{{ route('committee.' . $links[$committee->slug] . '.index') }}" class="btn btn-primary">
+                                                VIEW
+                                            </a>
+                                        @else
+                                            <a href="#" disabled class="btn btn-secondary">
+                                                VIEW
+                                            </a>
+                                        @endif
                                         <button type="button" class="btn btn-primarybtn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $committee->id }}">
                                             EDIT
                                         </button>

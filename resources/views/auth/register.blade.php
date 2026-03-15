@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    @vite(['resources/css/app.css'])
+@extends('layouts.auth')
+
+@section('title', 'Login')
+
+@push('styles')
     <style>
         * {
             margin: 0;
@@ -14,7 +12,11 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background-image: url({{ asset('img/hall.jpg') }});
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(4px);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -35,7 +37,7 @@
         }
 
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #112994 0%, #5975b3 100%);
             color: white;
             padding: 40px;
             text-align: center;
@@ -143,7 +145,7 @@
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #112994 0%, #5975b3 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -214,8 +216,9 @@
             animation: shake 0.3s ease-in-out;
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
@@ -320,8 +323,8 @@
                             <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                             <label for="remember">Remember me</label>
                         </div> -->
-                        <a href="{{ route('password.request') }}" class="forgot-password">
-                            Register
+                        <a href="{{ route('login') }}" class="forgot-password">
+                            Login
                         </a>
 
                         <a href="{{ route('password.request') }}" class="forgot-password">
@@ -342,7 +345,10 @@
             </div>
         </div>
     </div>
+    @include('partials.loading-screen')
+@endsection
 
+@push('scripts')
     <script>
         // Prevent double submission
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -400,6 +406,4 @@
             });
         }
     </script>
-    @include('partials.loading-screen')
-</body>
-</html>
+@endpush

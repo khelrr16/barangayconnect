@@ -59,7 +59,7 @@
                         </td>
                         <td>
                             @if($row['next_due'] === 'Complete')
-                                <span class="badge text-bg-success">Complete</span>
+                                <span class="badge bg-success">Complete</span>
                             @else
                                 <div class="fw-semibold">{{ $row['next_due_label'] }}</div>
                                 <div class="small text-muted">{{ $row['next_due'] }}</div>

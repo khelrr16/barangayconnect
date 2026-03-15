@@ -15,8 +15,13 @@ class CommitteeRole
         }
 
         $user = Auth::user();
+        /** @var \App\Models\User $user */
 
         if ($user->hasRole('admin')) {
+            return $next($request);
+        }
+
+        if ($user->hasRole('assistant') && $user->committeeAssistantAccessAsAssistant()->exists()) {
             return $next($request);
         }
 

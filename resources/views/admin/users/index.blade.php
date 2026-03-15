@@ -19,7 +19,9 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Actions</th>
+                        <th class="text-center">Resident ID</th>
+                        <th>Committee</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,7 +31,15 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ ucwords(str_replace('_', ' ',$user->getRoleNames()->first())) ?: 'No role' }}</td>
-                            <td class="d-flex gap-2">
+                            <td class="text-center">
+                                @if($user->resident_id)
+                                    <span class="badge bg-success">Linked</span>
+                                @else
+                                    <span class="badge bg-secondary">Not Linked</span>
+                                @endif
+                            </td>
+                            <td>{{ $user->committee?->name ?? 'N/A' }}</td>
+                            <td class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>

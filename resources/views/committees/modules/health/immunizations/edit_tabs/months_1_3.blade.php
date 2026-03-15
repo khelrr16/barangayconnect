@@ -6,7 +6,7 @@
     $doseMedicines = $tabConfigs[$tabKey]['doses'] ?? [];
 @endphp
 
-<form method="POST" action="{{ route('committee.immunization.update', $infant) }}">
+<form method="POST" action="{{ route('committee.health.immunization.update', $infant) }}">
     @csrf
     @method('PATCH')
     <input type="hidden" name="tab" value="{{ $tabKey }}">
@@ -79,7 +79,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>       
+        </div>
     </div>
 
     <div class="m-3 bg-white border rounded-5">

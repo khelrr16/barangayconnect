@@ -16,9 +16,23 @@ class CheckCommittee
         }
 
         $user = Auth::user();
+        /** @var \App\Models\User $user */
 
         if ($user->hasRole('admin')) {
             return $next($request);
+        }
+
+        if ($user->hasRole('assistant')) {
+            $slug = $user->assistedCommitteeSlug();
+            if ($slug) {
+                foreach ($committees as $committee) {
+                    if ($slug === $committee) {
+                        return $next($request);
+                    }
+                }
+            }
+
+            abort(403, 'Unauthorized access.');
         }
 
         if (!$user->official || !$user->official->committee) {

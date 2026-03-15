@@ -7,8 +7,8 @@
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tab }}-addInfo-modal">
             <i class="fa-solid fa-pen-to-square"></i>
         </button>
-    </div> 
-    
+    </div>
+
     <div class="mb-5 d-flex align-items-center justify-content-around text-center">
         <div>
             <div class="fw-bold p-1">
@@ -34,11 +34,11 @@
 
 <!-- Additional Info Model -->
 <div class="modal fade" id="{{ $tab }}-addInfo-modal" tabindex="-1" aria-hidden="true">
-    <form method="POST" action="{{ route('committee.addInfo.update', $infant) }}">
+    <form method="POST" action="{{ route('committee.health.immunization.addInfo.update', $infant) }}">
         @csrf
         @method('PATCH')
         <input type="hidden" name="tab" value="{{ $tab }}">
-        
+
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

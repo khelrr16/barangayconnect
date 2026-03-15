@@ -11,7 +11,7 @@ class MedicineBatchRequest extends FormRequest
     {
         return true;
     }
-    
+
     public function rules(): array
     {
         $rules = [
@@ -26,7 +26,7 @@ class MedicineBatchRequest extends FormRequest
             'received_date' => 'required|date|before_or_equal:today',
             'expiry_date' => 'required|date|after:today',
             'quantity_received' => 'required|integer',
-            
+            'status' => ['sometimes', Rule::in(['active', 'inactive'])],
         ];
 
         return $rules;
@@ -43,15 +43,15 @@ class MedicineBatchRequest extends FormRequest
     protected function getUniqueRule()
     {
         $rule = Rule::unique('medicine_batches', 'batch_number');
-        
+
         // If this is an update, ignore the current record
         if ($this->route('medicine_batch')) {
             $rule->ignore($this->route('medicine_batch')->id);
         }
-        
+
         // Add soft delete scope if you use soft deletes
         // $rule->whereNull('deleted_at');
-        
+
         return $rule;
     }
 

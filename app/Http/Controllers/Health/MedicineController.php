@@ -15,9 +15,9 @@ class MedicineController extends Controller
             if ($medicine->overall && $medicine->overall->total_received > 0) {
                 $totalReceived = $medicine->overall->total_received;
                 $totalRemaining = $medicine->overall->total_remaining;
-                
+
                 $medicine->stockPercent = ceil(($totalRemaining / $totalReceived) * 100);
-                
+
                 // Set stock status based on percentage
                 if ($medicine->stockPercent <= 20) {
                     $medicine->stockStatus = 'bg-danger';
@@ -38,7 +38,7 @@ class MedicineController extends Controller
 
     public function create()
     {
-        
+
     }
 
     public function store(Request $request)

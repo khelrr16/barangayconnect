@@ -65,8 +65,8 @@
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ $tab }}-addInfo-modal">
             <i class="fa-solid fa-pen-to-square"></i>
         </button>
-    </div> 
-    
+    </div>
+
     <div class="d-block align-items-center text-center">
         <h1 class="p-1">
             <i class="fa-solid fa-person-breastfeeding"></i>
@@ -114,7 +114,7 @@
                                         @php
                                             $immunizationData = data_get($immunizationDates, "{$tab}.{$medicineId}.{$dose}") ?? null;
                                         @endphp
-                                        
+
                                         @if($immunizationData)
                                             <td><span class="badge bg-success">{{ $immunizationData }}</span></td>
                                         @else
@@ -131,16 +131,16 @@
                 </tbody>
             </table>
         </div>
-    </div>       
+    </div>
 </div>
 
 <!-- Assessment Model -->
 <div class="modal fade" id="{{ $tab }}-assessment-modal" tabindex="-1" aria-hidden="true">
-    <form method="POST" action="{{ route('committee.assessment.update', $infant) }}">
+    <form method="POST" action="{{ route('committee.health.immunization.assessment.update', $infant) }}">
         @csrf
         @method('PATCH')
         <input type="hidden" name="tab" value="{{ $tab }}">
-        
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -185,11 +185,11 @@
 
 <!-- Additional Info Model -->
 <div class="modal fade" id="{{ $tab }}-addInfo-modal" tabindex="-1" aria-hidden="true">
-    <form method="POST" action="{{ route('committee.addInfo.update', $infant) }}">
+    <form method="POST" action="{{ route('committee.health.immunization.addInfo.update', $infant) }}">
         @csrf
         @method('PATCH')
         <input type="hidden" name="tab" value="{{ $tab }}">
-        
+
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -213,11 +213,11 @@
 
 <!-- Immunization Model -->
 <div class="modal fade" id="{{ $tab }}-immunization-modal" tabindex="-1" aria-hidden="true">
-    <form method="POST" action="{{ route('committee.immunization.update', $infant) }}">
+    <form method="POST" action="{{ route('committee.health.immunization.update', $infant) }}">
         @csrf
         @method('PATCH')
         <input type="hidden" name="tab" value="{{ $tab }}">
-        
+
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -225,15 +225,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                
+
                     <div class="table-responsive">
                         <table class="table table-striped align-middle text-center">
                             <thead class="table-primary">
                                 <tr>
                                     <th>Vaccine</th>
                                     <th>1st Dose</th>
-                                    <th>2nd Dose</th>
-                                    <th>3rd Dose</th>
                                 </tr>
                             </thead>
 
@@ -251,7 +249,7 @@
                                                     @php
                                                         $immunizationData = data_get($immunizationDates, "{$tab}.{$medicineId}.{$dose}") ?? null;
                                                     @endphp
-                                                    
+
                                                     @if($immunizationData)
                                                         <td>
                                                             <input

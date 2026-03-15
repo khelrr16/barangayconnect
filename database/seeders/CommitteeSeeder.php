@@ -33,7 +33,7 @@ class CommitteeSeeder extends Seeder
             ],
             [
                 'name' => 'BDRRM',
-                'slug' => 'bdrmm',
+                'slug' => 'bdrrm',
             ],
             [
                 'name' => 'Peace & Order',
@@ -43,7 +43,7 @@ class CommitteeSeeder extends Seeder
                 'name' => 'Youth & Sports',
                 'slug' => 'youth_sports',
             ],
-            
+
         ];
 
         foreach($committees as $committee){

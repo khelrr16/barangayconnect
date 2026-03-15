@@ -3,14 +3,14 @@
 @section('title', 'Immunization')
 
 @push('styles')
-<style>    
+<style>
     /* Small text styling */
     .nav-tabs .nav-link small {
         font-size: 0.7rem;
         display: block;
         color: #6c757d;
     }
-    
+
     /* Active state */
     .nav-tabs .nav-link.active{
         background-color: rgba(13, 109, 253, 0.1);
@@ -20,7 +20,7 @@
         color: #0d6efd;
     }
 
-    
+
 </style>
 
 @endpush
@@ -29,11 +29,11 @@
     <div class="container py-4">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('committee.immunization.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('committee.health.immunization.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
-        
+
         <div class="card shadow-sm">
 
             <!-- Header -->
@@ -56,24 +56,24 @@
                                 Overview
                             </button>
 
-                            <button id="nav-newborn-tab" data-bs-target="#nav-newborn" 
+                            <button id="nav-newborn-tab" data-bs-target="#nav-newborn"
                                 class="nav-link {{ session('activeTab') == 'newborn' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 Newborn <br>
                                 <small>0-28 days old</small>
                             </button>
-                            
-                            <button id="nav-1-3-tab" data-bs-target="#nav-1-3" 
+
+                            <button id="nav-1-3-tab" data-bs-target="#nav-1-3"
                                 class="nav-link {{ session('activeTab') == 'months_1_3' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 1-3 months old <br>
                                 <small>6-14 weeks</small>
                             </button>
-                            
+
                             <button id="nav-6-11-tab" data-bs-target="#nav-6-11"
                                 class="nav-link {{ session('activeTab') == 'months_6_11' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 6-11 months old <br>
                                 <small>Vitamin, MNP, MMR</small>
                             </button>
-                            
+
                             <button id="nav-12-tab" data-bs-target="#nav-12"
                                 class="nav-link {{ session('activeTab') == 'months_12' ? 'active' : '' }} flex-fill text-center" data-bs-toggle="tab" type="button" role="tab">
                                 12 months old <br>
@@ -89,10 +89,10 @@
                     </nav>
                 </div>
             </div>
-            
+
             <!-- Body -->
             <div class="d-flex">
-                
+
                 <!-- Details Panel -->
                 <div class="w-25 border-end">
                     <div class="p-3 m-3 rounded-5 bg-secondary bg-opacity-10">
@@ -103,7 +103,7 @@
                             </small>
                             <h5 class="fw-bold">{{ $infant->name }}</h5>
                         </div>
-                        
+
                         <div class="mb-4">
                             <small class="text-muted">
                                 <i class="fa-solid fa-pen-clip"></i>
@@ -111,8 +111,16 @@
                             </small>
                             <div class="fw-semibold">{{ $infant->created_at->format('F j, Y') }}</div>
                         </div>
-                        
+
                         <hr>
+
+                        <div class="mb-4">
+                            <small class="text-muted">
+                                <i class="fa-solid fa-baby"></i>
+                                AGE
+                            </small>
+                            <div class="fw-semibold">{{ $infant->age }}</div>
+                        </div>
 
                         <div class="mb-4">
                             <small class="text-muted">
@@ -123,7 +131,7 @@
                         </div>
 
                         <div class="mb-4">
-                            
+
                             <small class="text-muted">
                                 <i class="fa fa-mars-and-venus"></i>
                                 SEX
@@ -172,16 +180,16 @@
                                     N/A
                                 @endif
                             </div>
-                            
+
                         </div>
                     </div>
 
                 </div>
-                
+
                 <!-- Tab Panel -->
                 <div class="w-75 ">
                     <div class="tab-content" id="nav-tabContent">
-                        
+
                         <!-- Overview tab -->
                         <div class="tab-pane fade {{ session('activeTab') ? '' : 'show active' }}" id="nav-overview" role="tabpanel">
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
@@ -219,12 +227,12 @@
                             <div class="m-3 p-3 rounded-5 bg-secondary bg-opacity-10">
                                 @include('committees.modules.health.immunizations.profile_tabs.monitoring')
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
     </div>

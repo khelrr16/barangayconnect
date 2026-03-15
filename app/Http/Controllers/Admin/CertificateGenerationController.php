@@ -89,8 +89,8 @@ class CertificateGenerationController extends Controller
         $logoLeftPath = public_path('img/logo.png');
         $logoRightPath = public_path('img/Seal_of_San_Pedro,_Laguna.png');
         $logoSize = ['width' => 80, 'height' => 80];
-        $colLogoTwips = 2500;
-        $colCenterTwips = 4500;
+        $colLogoTwips = 1440;
+        $colCenterTwips = 5700;
 
         $table = $section->addTable([
             'layout' => \PhpOffice\PhpWord\Style\Table::LAYOUT_FIXED,
@@ -104,17 +104,48 @@ class CertificateGenerationController extends Controller
         if (file_exists($logoLeftPath)) {
             $cellLeft->addTextRun(['alignment' => Jc::START])->addImage($logoLeftPath, $logoSize);
         }
-        $cellCenter->addText('REPUBLIKA NG PILIPINAS', [], ['alignment' => Jc::CENTER]);
-        $cellCenter->addText('LALAWIGAN NG LAGUNA', [], ['alignment' => Jc::CENTER]);
-        $cellCenter->addText('LUNGSOD NG SAN PEDRO', [], ['alignment' => Jc::CENTER]);
-        $cellCenter->addText($barangayName, ['bold' => true], ['alignment' => Jc::CENTER]);
-        $cellCenter->addText($barangayAddress, [], ['alignment' => Jc::CENTER]);
-        $cellCenter->addText($contactNos, [], ['alignment' => Jc::CENTER]);
-        $cellCenter->addText('OFFICE OF THE PUNONG BARANGAY', [], ['alignment' => Jc::CENTER]);
+
+        $fontstyle=[
+            'name' => 'Cambria',
+            'size' => 10,
+            'bold' => true,
+        ];
+
+        $paragraphStyle = [
+            'spaceAfter' => 0,
+            'alignment' => Jc::CENTER,
+        ];
+
+        $cellCenter->addText('REPUBLIKA NG PILIPINAS', $fontstyle, $paragraphStyle);
+        $cellCenter->addText('LALAWIGAN NG LAGUNA', $fontstyle, $paragraphStyle);
+        $cellCenter->addText('LUNGSOD NG SAN PEDRO', $fontstyle, $paragraphStyle);
+        $cellCenter->addText($barangayName, ['name' => 'Cambria', 'size' => 16, 'bold' => true, 'shading' => ['fill' => '00FF00']], $paragraphStyle);
+
+        $fontstyle=[
+            'name' => 'Cambria',
+            'size' => 8,
+        ];
+
+        $cellCenter->addText($barangayAddress, $fontstyle, $paragraphStyle);
+        $cellCenter->addText($contactNos, $fontstyle, $paragraphStyle);
+
+        $fontstyle=[
+            'name' => 'Cambria',
+            'size' => 18,
+            'bold' => true,
+        ];
+
+        $paragraphStyle = [
+            'spaceBefore'=> 200,
+            'spaceAfter' => 200,
+            'alignment' => Jc::CENTER
+        ];
+
+        $cellCenter->addText('OFFICE OF THE PUNONG BARANGAY', $fontstyle, $paragraphStyle);
         if (file_exists($logoRightPath)) {
             $cellRight->addTextRun(['alignment' => Jc::END])->addImage($logoRightPath, $logoSize);
         }
-        $section->addTextBreak(0);
+        $section->addTextBreak(2);
 
         // Title
         $section->addText('CERTIFICATE OF INDIGENCY', ['bold' => true, 'size' => 14], ['alignment' => Jc::CENTER]);

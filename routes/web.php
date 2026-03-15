@@ -11,20 +11,22 @@ use App\Http\Controllers\Admin\OfficialController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BudgetFinance\BudgetOverviewController;
+use App\Http\Controllers\BudgetFinance\DisbursementController;
+use App\Http\Controllers\BudgetFinance\FundSourceController;
+use App\Http\Controllers\BudgetFinance\FinancialReportController;
 use App\Http\Controllers\Committee\DashboardController as CommitteeDashboardController;
+use App\Http\Controllers\Committee\PermissionsController as CommitteePermissionsController;
 use App\Http\Controllers\Committee\Health\DashboardController as CommitteeHealthDashboardController;
 use App\Http\Controllers\Health\ImmunizationController;
 use App\Http\Controllers\Health\InfantController;
 use App\Http\Controllers\Health\MedicineBatchController;
 use App\Http\Controllers\Health\MedicineController;
-use App\Http\Controllers\BudgetFinance\BudgetOverviewController;
-use App\Http\Controllers\BudgetFinance\DisbursementController;
-use App\Http\Controllers\BudgetFinance\FundSourceController;
-use App\Http\Controllers\BudgetFinance\FinancialReportController;
 use App\Http\Controllers\Health\NutritionalAssessmentController;
 use App\Http\Controllers\Home\LandingController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\Peace\BlotterController;
+use App\Http\Controllers\Peace\DashboardController as CommitteePeaceDashboardController;
 use App\Http\Controllers\Resident\PortalController as ResidentPortalController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\ResidentUploadController;
@@ -47,7 +49,7 @@ Route::middleware('guest')->group(function () {
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [LandingController::class, 'index'])->name('dashboard');
+    Route::get('/', [LandingController::class, 'index'])->name('index');
 
     // Resident lookup endpoints used by reusable modal components.
     Route::get('/api/residents/search', [ResidentController::class, 'apiSearch']);
@@ -65,7 +67,7 @@ Route::middleware('auth')->group(function () {
     //Admin
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::middleware('permission:view admin_dashboard')->group(function () {
-            Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/', [AdminDashboardController::class, 'index'])->name('index');
             Route::get('/dashboard/chart-data', [AdminDashboardController::class, 'getChartData'])->name('dashboard.chart-data');
             Route::get('/dashboard/testing', [AdminDashboardController::class, 'getChartData']);
         });
@@ -125,7 +127,7 @@ Route::middleware('auth')->group(function () {
 
     // Resident portal
     Route::middleware(['role:resident'])->prefix('resident')->name('resident.')->group(function () {
-        Route::get('/', [ResidentPortalController::class, 'index'])->name('dashboard');
+        Route::get('/', [ResidentPortalController::class, 'index'])->name('index');
         Route::get('/profile', [ResidentPortalController::class, 'profile'])->name('profile');
         Route::post('/profile/send-verification', [ResidentPortalController::class, 'sendVerification'])->name('profile.send-verification');
         Route::get('/request-document', [ResidentPortalController::class, 'requestDocument'])->name('request-document');
@@ -137,25 +139,36 @@ Route::middleware('auth')->group(function () {
 
     //Committees
     Route::middleware('committee_role')->prefix('committee')->name('committee.')->group(function () {
-        Route::middleware('permission:view committee_dashboard')->group(function () {
-            Route::get('/dashboard', [CommitteeDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [CommitteeDashboardController::class, 'index'])->name('index');
+
+        Route::get('/permissions', [CommitteePermissionsController::class, 'index'])->name('permissions.index');
+        Route::post('/permissions', [CommitteePermissionsController::class, 'store'])->name('permissions.store');
+        Route::delete('/permissions/{access}', [CommitteePermissionsController::class, 'destroy'])->name('permissions.destroy');
+
+        Route::middleware('committee:peace_order')->prefix('peace')->name('peace.')->group(function () {
+            Route::get('/', [CommitteePeaceDashboardController::class, 'index'])->name('index');
+            Route::get('/blotter', [BlotterController::class, 'index'])->name('blotter.index');
+            Route::post('/blotter', [BlotterController::class, 'store'])->name('blotter.store');
+            Route::get('/blotter/create', [BlotterController::class, 'create'])->name('blotter.create');
+            Route::get('/blotter/{blotter}', [BlotterController::class, 'show'])->name('blotter.show');
+            Route::patch('/blotter/{blotter}', [BlotterController::class, 'update'])->name('blotter.update');
+            Route::delete('/blotter/{blotter}', [BlotterController::class, 'destroy'])->name('blotter.destroy');
+            Route::get('/blotter/{blotter}/edit', [BlotterController::class, 'edit'])->name('blotter.edit');
+            Route::post('/blotter/{blotter}/generate/hearing', [BlotterController::class, 'generateHearing'])->name('blotter.generateHearing');
+            Route::patch('/blotter/{blotter}/update-status', [BlotterController::class, 'updateStatus'])->name('blotter.update-status');
+
         });
 
-        Route::get('/peace/blotter/', [BlotterController::class, 'index'])->name('peace.blotter.index');
-        Route::get('/peace/blotter/create', [BlotterController::class, 'create'])->name('peace.blotter.create');
-        Route::post('/peace/blotter/', [BlotterController::class, 'store'])->name('peace.blotter.store');
-
-        Route::middleware('committee:health_sanitation')->group(function () {
-
-            Route::get('/health/dashboard', [CommitteeHealthDashboardController::class, 'index'])->name('health.dashboard');
-            Route::get('/health/dashboard/print', [CommitteeHealthDashboardController::class, 'print'])->name('health.dashboard.print');
-            Route::get('/health/dashboard/pdf', [CommitteeHealthDashboardController::class, 'pdf'])->name('health.dashboard.pdf');
+        Route::middleware('committee:health_sanitation')->prefix('health')->name('health.')->group(function () {
+            Route::get('/', [CommitteeHealthDashboardController::class, 'index'])->name('index');
+            Route::get('/dashboard/print', [CommitteeHealthDashboardController::class, 'print'])->name('dashboard.print');
+            Route::get('/dashboard/pdf', [CommitteeHealthDashboardController::class, 'pdf'])->name('dashboard.pdf');
 
             Route::get('/immunization', [ImmunizationController::class, 'index'])->name('immunization.index');
             Route::get('/immunization/{infant}', [ImmunizationController::class, 'show'])->name('immunization.show');
             Route::patch('/immunization/{infant}', [ImmunizationController::class, 'update'])->name('immunization.update');
-            Route::patch('/immunization/{infant}/addInfo', [ImmunizationController::class, 'addInfo'])->name('addInfo.update');
-            Route::patch('/immunization/{infant}/assessment', [NutritionalAssessmentController::class, 'update'])->name('assessment.update');
+            Route::patch('/immunization/{infant}/addInfo', [ImmunizationController::class, 'addInfo'])->name('immunization.addInfo.update');
+            Route::patch('/immunization/{infant}/assessment', [NutritionalAssessmentController::class, 'update'])->name('immunization.assessment.update');
 
             Route::post('/infant', [InfantController::class, 'store'])->name('infant.store');
             Route::get('/infant/create', [InfantController::class, 'create'])->name('infant.create');
@@ -167,7 +180,9 @@ Route::middleware('auth')->group(function () {
             Route::delete('/medicine/{medicine}', [MedicineController::class, 'destroy'])->name('medicine.destroy');
             Route::get('/medicine/create', [MedicineController::class, 'create'])->name('medicine.create');
 
-            Route::post('/medicine/batch/create', [MedicineBatchController::class, 'store'])->name('medicine.batch.store');
+            Route::post('/medicine/batch', [MedicineBatchController::class, 'store'])->name('medicine.batch.store');
+            Route::patch('/medicine/batch/{medicine_batch}', [MedicineBatchController::class, 'update'])->name('medicine.batch.update');
+            Route::delete('/medicine/batch/{medicine_batch}', [MedicineBatchController::class, 'destroy'])->name('medicine.batch.destroy');
         });
 
         Route::middleware('committee:budget_finance')->group(function () {

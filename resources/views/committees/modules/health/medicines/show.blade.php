@@ -6,7 +6,7 @@
     <div class="container">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('committee.medicine.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('committee.health.medicine.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
@@ -53,6 +53,7 @@
                                 <th>Wasted</th>
                                 <th>Expired</th>
                                 <th>Available</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -79,7 +80,14 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                    @if($batch->status == 'active')
+                                        <span class="badge bg-success">Active</span>
+                                    @else
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal-{{ $batch->id }}">Edit</button>
                                     <button class="btn btn-sm btn-outline-danger">Delete</button>
                                 </td>
                             </tr>
@@ -94,14 +102,14 @@
                 @endif
             </div>
         </div>
-        
+
     </div>
 
     <!-- Create Modal -->
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="{{ route('committee.medicine.batch.store') }}" method="POST">
+                <form action="{{ route('committee.health.medicine.batch.store') }}" method="POST">
                     @csrf
 
                     <div class="modal-header">
@@ -145,6 +153,85 @@
             </div>
         </div>
     </div>
+
+    {{-- Edit Modal --}}
+    @foreach($medicine->batches as $batch)
+        <div class="modal fade" id="editModal-{{ $batch->id }}" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <form action="{{ route('committee.health.medicine.batch.update', $batch) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="modal-header">
+                        <h1 class="modal-title fw-bolder fs-5 " id="createModalLabel">EDIT BATCH</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <small class="text-muted">BATCH NUMBER</small>
+                            <input required type="text" name="batch_number" value="{{ old('batch_number', $batch->batch_number) }}" class="form-control fw-bold">
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">MANUFACTURER</small>
+                            <input required type="text" name="manufacturer" value="{{ old('manufacturer', $batch->manufacturer) }}" class="form-control fw-bold">
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">RECEIVED DATE</small>
+                            <input required type="date" name="received_date" value="{{ old('received_date', $batch->received_date->format('Y-m-d')) }}" class="form-control fw-bold">
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">EXPIRY DATE</small>
+                            <input required type="date" name="expiry_date" value="{{ old('expiry_date', $batch->expiry_date->format('Y-m-d')) }}" class="form-control fw-bold">
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">RECEIVED QTY</small>
+                            <input required type="number" name="quantity_received" value="{{ old('quantity_received', $batch->quantity_received) }}" class="form-control fw-bold">
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <div class="mb-3 flex-grow-1">
+                                <small class="text-muted">USED</small>
+                                <input required type="number" name="quantity_used" value="{{ old('quantity_used', $batch->quantity_used) }}" class="form-control fw-bold">
+                            </div>
+
+                            <div class="mb-3 flex-grow-1">
+                                <small class="text-muted">WASTED</small>
+                                <input type="number" name="quantity_wasted" value="{{ old('quantity_wasted', $batch->quantity_wasted) }}" class="form-control fw-bold">
+                            </div>
+
+                            <div class="mb-3 flex-grow-1">
+                                <small class="text-muted">EXPIRED</small>
+                                <input type="number" name="quantity_expired" value="{{ old('quantity_expired', $batch->quantity_expired) }}" class="form-control fw-bold">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">STATUS</small>
+                            <select name="status" id="" class="form-control fw-bold">
+                                <option value="active" {{ old('status', $batch->status) == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ old('status', $batch->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="medicine_id" value="{{ $medicine->id }}" class="form-control fw-bold">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
 @endsection
 
 @push('scripts')

@@ -22,7 +22,7 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
 
-                <form action="{{ route('admin.certificates.indigency.generate') }}" method="POST">
+                <form action="{{ route('admin.certificates.indigency.generate') }}" method="POST" target="_blank">
                     @csrf
                     <div class="mb-3">
                         <label for="resident_id" class="form-label">Resident <span class="text-danger">*</span></label>

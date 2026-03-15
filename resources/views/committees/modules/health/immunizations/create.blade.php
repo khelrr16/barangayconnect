@@ -28,20 +28,20 @@
     <div class="container py-4">
         <!-- Back Button -->
         <div class="mb-3">
-            <a href="{{ route('committee.immunization.index') }}" class="text-decoration-none text-dark">
+            <a href="{{ route('committee.health.immunization.index') }}" class="text-decoration-none text-dark">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
 
-        <form action="{{ route('committee.infant.store') }}" method="POST">
+        <form action="{{ route('committee.health.infant.store') }}" method="POST">
             @csrf
-            
+
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="fw-bold mb-4 text-center">NEW INFANT</h4>
 
                     <div class="row">
-                        
+
                         <div class="col-6 border-end">
                             <div class="row">
                                 <div class="col-md-12 mb-3">
@@ -93,7 +93,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         {{-- Option 2: TT3/Td3 to TT5/Td5 --}}
                                         <div class="col-md-6">
                                             <div class="card h-100 {{ old('cpab') == '2' ? 'border-primary' : '' }}">
@@ -112,7 +112,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     {{-- Additional Info (Optional) --}}
                                     <div class="mt-2 text-info small">
                                         <i class="fa-solid fa-info-circle me-1"></i>
@@ -122,7 +122,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">  
+                        <div class="col-6">
                             <ul class="nav nav-pills mb-3 gap-3 justify-content-center" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button id="pills-address1-tab" data-bs-target="#pills-address1"
@@ -200,7 +200,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {{-- Hidden field to identify which address type --}}
                             <input type="hidden" name="address_type" id="address_type" value="{{ old('address_type') ?? '' }}">
                         </div>
@@ -223,7 +223,7 @@
             const address2Fields = document.querySelectorAll('.address2-field');
             const tab1 = document.getElementById('pills-address1-tab');
             const tab2 = document.getElementById('pills-address2-tab');
-            
+
             // Function to enable/disable fields based on active tab
             function toggleFields(activeTab) {
                 if (activeTab === 'san_lorenzo') {
@@ -244,13 +244,13 @@
                     });
                 }
             }
-            
+
             // Update on tab change
             tab1.addEventListener('shown.bs.tab', function() {
                 addressType.value = 'san_lorenzo';
                 toggleFields('san_lorenzo');
             });
-            
+
             tab2.addEventListener('shown.bs.tab', function() {
                 addressType.value = 'non_san_lorenzo';
                 toggleFields('non_san_lorenzo');

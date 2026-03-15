@@ -2,6 +2,11 @@
 
 @section('title', 'Verification Request')
 
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+@endpush
+
 @section('content')
     <div class="container my-5">
         <a href="{{ route('admin.verification-requests.index') }}" class="btn btn-outline-secondary mb-3"><i class="fa-solid fa-arrow-left"></i> Back to list</a>
@@ -60,9 +65,9 @@
                             <label for="resident_id" class="form-label">Select resident to link <span class="text-danger">*</span></label>
                             <select name="resident_id" id="resident_id" class="form-select" required>
                                 <option value="">-- Select resident --</option>
-                                @foreach($residents as $r)
+                                {{-- @foreach($residents as $r)
                                     <option value="{{ $r->id }}">{{ $r->full_name }} ({{ $r->rbi_no }})</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -87,3 +92,37 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        (function () {
+            var $ = window.jQuery || window.$;
+            if (typeof $ === 'undefined') return;
+            $(function () {
+                var $select = $('#resident_id');
+                if ($select.length) {
+                    $select.select2({
+                        theme: 'bootstrap-5',
+                        width: '100%',
+                        placeholder: 'Type to search resident',
+                        allowClear: true,
+                        minimumInputLength: 0,
+                        ajax: {
+                            url: '{{ route('admin.certificates.residents-search') }}',
+                            dataType: 'json',
+                            delay: 200,
+                            data: function (params) {
+                                return { q: params.term, limit: 5 };
+                            },
+                            processResults: function (data) {
+                                return { results: data.results };
+                            }
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+@endpush

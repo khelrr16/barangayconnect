@@ -65,4 +65,28 @@ class User extends Authenticatable
     {
         return $this->hasMany(ResidentLinkVerification::class);
     }
+
+    public function committeeAssistantAccessAsAssistant()
+    {
+        return $this->hasOne(CommitteeAssistantAccess::class, 'assistant_user_id');
+    }
+
+    public function committeeAssistantAccessesAsHead()
+    {
+        return $this->hasMany(CommitteeAssistantAccess::class, 'committee_head_id');
+    }
+
+    public function isCommitteeHeadLike(): bool
+    {
+        if ($this->hasRole('committee_head')) {
+            return true;
+        }
+
+        return $this->roles()->where('name', 'like', 'committee_head_%')->exists();
+    }
+
+    public function assistedCommitteeSlug(): ?string
+    {
+        return $this->committeeAssistantAccessAsAssistant?->committee_slug;
+    }
 }

@@ -23,10 +23,10 @@ class MedicineBatchController extends Controller
     {
         $validated = $request->validated();
         $validated['quantity_remaining'] = $validated['quantity_received'];
-        
+
         $medicineBatch = MedicineBatch::create($validated);
 
-        return redirect()->route('committee.medicine.show', $medicineBatch->medicine_id)
+        return redirect()->route('committee.health.medicine.show', $medicineBatch->medicine_id)
             ->with('success', 'Medicine batch created successfully.');
     }
 
@@ -40,9 +40,15 @@ class MedicineBatchController extends Controller
         //
     }
 
-    public function update(Request $request, string $id)
+    public function update(MedicineBatchRequest $request, MedicineBatch $medicineBatch)
     {
-        //
+        $validated = $request->validated();
+        $validated['quantity_remaining'] = $validated['quantity_received'];
+
+        $medicineBatch->update($validated);
+
+        return redirect()->route('committee.health.medicine.show', $medicineBatch->medicine_id)
+            ->with('success', 'Medicine batch updated successfully.');
     }
 
     public function destroy(string $id)

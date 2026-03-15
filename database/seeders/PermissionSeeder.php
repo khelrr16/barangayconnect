@@ -98,6 +98,11 @@ class PermissionSeeder extends Seeder
             'manage committee_anouncements',
         ]);
 
+        $assistantRole = Role::firstOrCreate([
+            'name' => 'assistant',
+            'guard_name' => $guardName,
+        ]);
+
         $clerkRole = Role::firstOrCreate([
             'name' => 'clerk',
             'guard_name' => $guardName,
@@ -115,6 +120,11 @@ class PermissionSeeder extends Seeder
         ]);
 
         $adminRole->syncPermissions($allPermissions);
+
+        Role::firstOrCreate([
+            'name' => 'assistant',
+            'guard_name' => $guardName,
+        ]);
 
         Role::firstOrCreate([
             'name' => 'resident',

@@ -6,109 +6,128 @@
 
     <nav class="sidebar-nav">
         <ul class="nav-menu">
-            @can('view committee_dashboard')
+            @if(auth()->check() && (auth()->user()->can('view committee_dashboard') || (auth()->user()->hasRole('assistant') && auth()->user()->committeeAssistantAccessAsAssistant()->exists())))
             <li class="nav-item">
-                <a href="{{ route('committee.dashboard') }}" class="nav-link">
+                <a href="{{ route('committee.index') }}" class="nav-link">
                     <i class="fa-solid fa-gauge-high"></i>
-                    <span class="nav-text">DASHBOARD</span>
+                    <span class="nav-text">Dashboard</span>
                 </a>
             </li>
-            @endcan
+            @endif
 
-            @can('view rbi')
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle no-arrow d-flex justify-content-between align-items-center" data-bs-target="#rbiSubmenu" aria-controls="rbiSubmenu" href="#" role="button" data-bs-toggle="collapse"  aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-rectangle-list"></i>
-                        <span class="nav-text">REGISTRY OF BRGY. INHABITANTS (RBI)</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-down custom-arrow"></i>
-                </a>
-                
-                <div class="collapse" id="rbiSubmenu">
-                    <ul class="nav flex-column ms-3">
-                        <li class="nav-item">
-                            <a href="{{ route('resident.index') }}" class="nav-link">
-                                <i class="fa-solid fa-users"></i>
-                                <span class="nav-text">RESIDENTS</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('household.index') }}" class="nav-link">
-                                <i class="fa-solid fa-house"></i>
-                                <span class="nav-text">HOUSEHOLDS</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            @endcan
+            @if(auth()->check() && auth()->user()->isCommitteeHeadLike() && auth()->user()->official && auth()->user()->official->committee)
+                <li class="nav-item">
+                    <a href="{{ route('committee.permissions.index') }}" class="nav-link">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span class="nav-text">Permissions</span>
+                    </a>
+                </li>
+            @endif
 
-            @can('manage users')
-            <li class="nav-item">
-                <a href="{{ route('admin.users.index') }}" class="nav-link">
-                    <i class="fa-solid fa-user-gear"></i>
-                    <span class="nav-text">USER ACCOUNTS</span>
-                </a>
-            </li>
-            @endcan
+            @php
+                $isAssistant = auth()->check() && auth()->user()->hasRole('assistant') && auth()->user()->committeeAssistantAccessAsAssistant()->exists();
+                $assistantCommitteeSlug = $isAssistant ? auth()->user()->assistedCommitteeSlug() : null;
+            @endphp
 
-            @can('manage user_permissions')
-            <li class="nav-item">
-                <a href="{{ route('admin.roles-permissions.index') }}" class="nav-link">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span class="nav-text">ROLES PERMISSIONS</span>
-                </a>
-            </li>
-            @endcan
-
+            @if($isAssistant)
+                @if($assistantCommitteeSlug === 'health_sanitation')
+                    <li class="nav-item">
+                        <a href="{{ route('committee.health.immunization.index') }}" class="nav-link">
+                            <i class="fa-solid fa-syringe"></i>
+                            <span class="nav-text">Immunization for Infants</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('committee.health.medicine.index') }}" class="nav-link">
+                            <i class="fa-solid fa-tablets"></i>
+                            <span class="nav-text">Medicine Inventory</span>
+                        </a>
+                    </li>
+                @elseif($assistantCommitteeSlug === 'peace_order')
+                    <li class="nav-item">
+                        <a href="{{ route('committee.peace.blotter.index') }}" class="nav-link">
+                            <i class="fa-solid fa-gavel"></i>
+                            <span class="nav-text">Blotter</span>
+                        </a>
+                    </li>
+                @elseif($assistantCommitteeSlug === 'budget_finance')
+                    <li class="nav-item">
+                        <a href="{{ route('committee.budget.index') }}" class="nav-link">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span class="nav-text">Budget Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('committee.disbursements.index') }}" class="nav-link">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                            <span class="nav-text">Disbursements</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('committee.fund-sources.index') }}" class="nav-link">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                            <span class="nav-text">Fund Sources</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('committee.reports.index') }}" class="nav-link">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="nav-text">Financial Reports</span>
+                        </a>
+                    </li>
+                @endif
+            @else
             @can('view health_sanitation')
-            <li class="nav-item">
-                <a href="{{ route('committee.health.dashboard') }}" class="nav-link">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span class="nav-text">HEALTH DASHBOARD</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('committee.immunization.index') }}" class="nav-link">
-                    <i class="fa-solid fa-syringe"></i>
-                    <span class="nav-text">IMMUNIZATION FOR INFANTS</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('committee.medicine.index') }}" class="nav-link">
-                    <i class="fa-solid fa-tablets"></i>
-                    <span class="nav-text">MEDICINE INVENTORY</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a href="{{ route('committee.health.immunization.index') }}" class="nav-link">
+                        <i class="fa-solid fa-syringe"></i>
+                        <span class="nav-text">Immunization for Infants</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('committee.health.medicine.index') }}" class="nav-link">
+                        <i class="fa-solid fa-tablets"></i>
+                        <span class="nav-text">Medicine Inventory</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('view peace_order')
+                <li class="nav-item">
+                    <a href="{{ route('committee.peace.blotter.index') }}" class="nav-link">
+                        <i class="fa-solid fa-gavel"></i>
+                        <span class="nav-text">Blotter</span>
+                    </a>
+                </li>
             @endcan
 
             @can('view budget_finance')
-            <li class="nav-item">
-                <a href="{{ route('committee.budget.index') }}" class="nav-link">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span class="nav-text">Budget Overview</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('committee.disbursements.index') }}" class="nav-link">
-                    <i class="fa-solid fa-money-bill-transfer"></i>
-                    <span class="nav-text">Disbursements</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('committee.fund-sources.index') }}" class="nav-link">
-                    <i class="fa-solid fa-piggy-bank"></i>
-                    <span class="nav-text">Fund Sources</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('committee.reports.index') }}" class="nav-link">
-                    <i class="fa-solid fa-file-lines"></i>
-                    <span class="nav-text">Financial Reports</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a href="{{ route('committee.budget.index') }}" class="nav-link">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span class="nav-text">Budget Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('committee.disbursements.index') }}" class="nav-link">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                        <span class="nav-text">Disbursements</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('committee.fund-sources.index') }}" class="nav-link">
+                        <i class="fa-solid fa-piggy-bank"></i>
+                        <span class="nav-text">Fund Sources</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('committee.reports.index') }}" class="nav-link">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span class="nav-text">Financial Reports</span>
+                    </a>
+                </li>
             @endcan
+            @endif
         </ul>
     </nav>
 

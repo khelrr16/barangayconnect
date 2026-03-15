@@ -10,7 +10,7 @@
                 + NEW
             </button>
         </div>
-        
+
         <div class="card shadow-sm card-custom">
             @if($officials->isNotEmpty())
             <div class="table-responsive">

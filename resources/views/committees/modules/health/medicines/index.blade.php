@@ -12,50 +12,45 @@
         </div>
 
         @if($medicines->isNotEmpty())
-        <div class="row"> 
+        <div class="row">
             @foreach($medicines as $medicine)
             <div class="col-6 mb-5">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary bg-opacity-10">
                         <button class="accordion-button container d-flex justify-content-between" data-bs-target="#medicinePanel{{ $medicine->id }}" aria-controls="medicinePanel{{ $medicine->id }}" aria-expanded="true" type="button" data-bs-toggle="collapse">
-                            <div class="container d-flex justify-content-between">
-                                <div class="fw-bold">
+                            <div class="container d-flex justify-content-between align-items-center">
+                                <h3 class="fw-bolder m-0">
                                     @if($medicine->type == 'Vaccine')
-                                    <i class="fa-solid fa-syringe me-2"></i> 
-                                    @else($medicine->type == 'Vitamin')
+                                    <i class="fa-solid fa-syringe me-2"></i>
+                                    @else
                                     <i class="fa-solid fa-prescription-bottle-medical"></i>
                                     @endif
                                     {{ $medicine->name }}
-                                </div>
-                                <div>
-                                    @if($medicine->status == 'Active')
-                                    <span class="badge bg-success">
-                                        <i class="fa-regular fa-circle-check"></i>
-                                        {{ $medicine->status }}
+                                </h3>
+                                <h4 class="fw-bold m-0">
+                                    @if($medicine->overall->total_remaining < 1)
+                                    <span class="badge bg-danger">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        No Stock
                                     </span>
-                                    @elseif($medicine->status == 'Inactive')
-                                    <span class="badge bg-secondary">
-                                        <i class="fa-solid fa-circle-minus"></i>
-                                        {{ $medicine->status }}
+                                    @elseif($medicine->overall->total_remaining < 10)
+                                    <span class="badge bg-warning">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        Needs Restock
                                     </span>
                                     @endif
-                                </div>
+                                </h4 class="fw-bold m-0">
                             </div>
                         </button>
                     </div>
                     <div id="medicinePanel{{ $medicine->id }}" class="accordion-collapse collapse show">
-                        <div class="card-body"> 
-                            <!-- <div class="mb-3">
-                                <small class="text-muted">DESCRIPTION</small>
-                                <div class="fw-semibold mh-100 overflow-hidden" style="height: 100px;">{{ $medicine->description }}</div>
-                            </div> -->
-
+                        <div class="card-body">
                             @if($medicine->currentBatch)
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">AVAILABLE STOCK</small>
                                     <h4 class="fw-bold">{{ $medicine->overall->total_remaining }} doses</h4>
                                 </div>
-                            
+
                                 <div class="mb-3 progress">
                                     <div class="progress-bar {{ $medicine->stockStatus }}" role="progressbar" style="width: {{ $medicine->stockPercent }}%">
                                         {{ $medicine->stockPercent }}%
@@ -94,7 +89,7 @@
                                     <small class="text-muted">Batch Qty Received</small>
                                     <div class="fw-semibold">{{ $medicine->currentBatch->quantity_received }}</div>
                                 </div>
-                                
+
 
                                 <div class="col-6 mb-3">
                                     <small class="text-muted">Expiry Date</small>
@@ -113,13 +108,9 @@
 
                         <div class="card-footer">
                             <div class="d-flex justify-content-between gap-2">
-                                <a class="w-100 btn btn-sm btn-primary text-white fw-bold" href="{{ route('committee.medicine.show', $medicine) }}">
+                                <a class="w-100 btn btn-sm btn-primary text-white fw-bold" href="{{ route('committee.health.medicine.show', $medicine) }}">
                                     <i class="fa-regular fa-eye"></i> View
                                 </a>
-                                <button class="w-100 btn btn-sm btn-warning text-white fw-bold">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </button>
-                                <button class="w-10 btn btn-sm btn-danger"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
                     </div>

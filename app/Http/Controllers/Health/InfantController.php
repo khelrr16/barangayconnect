@@ -29,7 +29,7 @@ class InfantController extends Controller
         $validated = $request->validated();
 
         $newInfant = DB::transaction(function () use ($validated) {
-            
+
             if($validated['address_type'] == 'san_lorenzo') {
                 $household = Household::firstOrCreate(
                     Arr::only($validated, ['subdivision', 'street', 'block', 'lot', 'unit'])
@@ -47,7 +47,7 @@ class InfantController extends Controller
             return Infant::create($infantData);
         });
 
-        return redirect()->route('committee.immunization.show', $newInfant->id)
+        return redirect()->route('committee.health.immunization.show', $newInfant->id)
             ->with('success', 'Infant created successfully.');
     }
 
@@ -66,7 +66,7 @@ class InfantController extends Controller
         $validated = $request->validated();
 
         $newInfant = DB::transaction(function () use ($validated, $infant) {
-            
+
             if($validated['address_type'] == 'san_lorenzo') {
                 $household = Household::firstOrCreate(
                     Arr::only($validated, ['subdivision', 'street', 'block', 'lot', 'unit'])

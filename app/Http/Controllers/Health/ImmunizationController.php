@@ -119,13 +119,13 @@ class ImmunizationController extends Controller
             }
 
             if (empty($pendingMedicines)) {
-                $status = ['label' => 'Completed', 'class' => 'text-bg-success'];
+                $status = ['label' => 'Completed', 'class' => 'bg-success'];
             } elseif ($today->lt($schedule['due_date'])) {
-                $status = ['label' => 'Upcoming', 'class' => 'text-bg-secondary'];
+                $status = ['label' => 'Upcoming', 'class' => 'bg-secondary'];
             } elseif ($schedule['deadline_date'] && $today->gt($schedule['deadline_date'])) {
-                $status = ['label' => 'Overdue', 'class' => 'text-bg-danger'];
+                $status = ['label' => 'Overdue', 'class' => 'bg-danger'];
             } else {
-                $status = ['label' => 'Due now', 'class' => 'text-bg-warning'];
+                $status = ['label' => 'Due now', 'class' => 'bg-warning'];
             }
 
             return [
@@ -142,10 +142,10 @@ class ImmunizationController extends Controller
         })->values();
 
         $immunizationDates = [];
-        
+
         foreach ($tabConfigs as $tabKey => $tabConfig) {
             $immunizationDates[$tabKey] = [];
-            
+
             foreach ($tabConfig as $doseNumber => $doseMedicines) {
                 foreach ($doseMedicines as $medicineName) {
                     $medicineId = $medicineIdsByName->get($medicineName);

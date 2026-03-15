@@ -65,6 +65,13 @@
                         <h5 class="mb-0">Submit Verification ID</h5>
                     </div>
                     <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge bg-danger fw-bold">REJECTED</span>
+                            <div>
+                                {{ $pendingVerification->remarks ?? 'Your previous verification ID was rejected by the admin.' }}
+                            </div>
+                        </div>
+
                         <p class="text-muted small mb-3">Upload a clear photo or scan of your Philippine National ID or any valid government-issued ID. Accepted: JPEG, PNG, PDF (max 5MB).</p>
                         <form action="{{ route('resident.profile.send-verification') }}" method="POST" enctype="multipart/form-data">
                             @csrf
@@ -77,6 +84,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Send Verification ID</button>
                         </form>
+
                     </div>
                 </div>
             @endif

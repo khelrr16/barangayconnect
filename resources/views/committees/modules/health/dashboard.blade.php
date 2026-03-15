@@ -25,7 +25,7 @@
 
 		<div class="card shadow-sm mb-3 no-print">
 			<div class="card-body">
-				<form method="GET" action="{{ route('committee.health.dashboard') }}" class="row g-3 align-items-end">
+				<form method="GET" action="{{ route('committee.health.index') }}" class="row g-3 align-items-end">
 					<div class="col-md-3">
 						<label for="mode" class="form-label">View by</label>
 						<select id="mode" name="mode" class="form-select">

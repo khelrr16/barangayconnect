@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - System</title>
-    @vite(['resources/css/app.css'])
+@extends('layouts.auth')
+
+@section('title', 'Login')
+
+@push('styles')
     <style>
         * {
             margin: 0;
@@ -14,7 +12,11 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background-image: url({{ asset('img/hall.jpg') }});
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(4px);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -35,7 +37,7 @@
         }
 
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #112994 0%, #5975b3 100%);
             color: white;
             padding: 40px;
             text-align: center;
@@ -49,6 +51,10 @@
         .login-header p {
             opacity: 0.9;
             font-size: 14px;
+        }
+
+        .login-img{
+            height: 150px;
         }
 
         .login-body {
@@ -143,7 +149,7 @@
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #112994 0%, #5975b3 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -161,6 +167,11 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .header-highlight {
+            color: #fa8416;
+            font-weight: bolder;
         }
 
         .alert {
@@ -214,13 +225,17 @@
             animation: shake 0.3s ease-in-out;
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <h1>Welcome Back</h1>
-                <p>Sign in to access your dashboard</p>
+                <img class="login-img" src="{{ asset('img/logo.png') }}" alt="">
+                <h1>
+                    Brgy. San Lorenzo Ruiz Portal <span class="header-highlight">BDIS</span>
+                </h1>
+                <p>Sign in to access.</p>
             </div>
 
             <div class="login-body">
@@ -243,7 +258,7 @@
                 <!-- Lockout Timer -->
                 @if(session('lockout_time'))
                     <div class="alert alert-warning">
-                        Too many login attempts. Please try again in 
+                        Too many login attempts. Please try again in
                         <span id="timer">{{ session('lockout_time') }}</span> seconds.
                     </div>
                 @endif
@@ -254,12 +269,12 @@
                     <!-- Email Field -->
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" 
-                            id="email" 
-                            name="email" 
-                            value="{{ old('email') }}" 
+                        <input type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
                             class="@error('email') is-invalid @enderror"
-                            required 
+                            required
                             autofocus
                             autocomplete="email"
                             placeholder="Enter your email">
@@ -271,9 +286,9 @@
                     <!-- Password Field -->
                     <div class="form-group password-group">
                         <label for="password">Password</label>
-                        <input type="password" 
-                            id="password" 
-                            name="password" 
+                        <input type="password"
+                            id="password"
+                            name="password"
                             class="@error('password') is-invalid @enderror"
                             required
                             autocomplete="current-password"
@@ -309,56 +324,9 @@
 
                 <!-- Demo Credentials (Remove in production) -->
                 <!-- <div class="login-footer">
-                    
+
                 </div> -->
             </div>
         </div>
     </div>
-
-    <script>
-        // Prevent double submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const btn = document.getElementById('loginBtn');
-            btn.disabled = true;
-            btn.textContent = 'Signing in...';
-        });
-
-        // Lockout timer countdown
-        @if(session('lockout_time'))
-            let seconds = {{ session('lockout_time') }};
-            const timerElement = document.getElementById('timer');
-            
-            const countdown = setInterval(function() {
-                seconds--;
-                timerElement.textContent = seconds;
-                
-                if (seconds <= 0) {
-                    clearInterval(countdown);
-                    location.reload(); // Refresh page to enable login
-                }
-            }, 1000);
-        @endif
-
-        // Shake animation on error
-        @if($errors->any())
-            document.querySelector('.login-card').classList.add('shake');
-            setTimeout(() => {
-                document.querySelector('.login-card').classList.remove('shake');
-            }, 300);
-        @endif
-
-        // Password show/hide toggle
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordField = document.getElementById('password');
-        const eyeIcon = document.getElementById('eyeIcon');
-        
-        togglePassword.addEventListener('click', function() {
-            const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-            eyeIcon.className = type === 'password' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
-            togglePassword.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
-        });
-    </script>
-    @include('partials.loading-screen')
-</body>
-</html>
+@endsection

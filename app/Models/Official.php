@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Official extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
-        'name', 
-        'position', 
-        'committee_id', 
-        'term_start', 
+        'name',
+        'position',
+        'committee_id',
+        'term_start',
         'term_end'
     ];
-    
+
     protected $casts = [
         'term_start' => 'date', // or 'datetime'
         'term_end' => 'date',   // if you have this field

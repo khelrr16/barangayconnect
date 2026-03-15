@@ -14,11 +14,12 @@ class Medicine extends Model
     ];
 
     public function currentBatch(){
-        return $this->hasOne(MedicineBatch::class, 'medicine_id')->where('status','Active')->oldest();
+        return $this->hasOne(MedicineBatch::class, 'medicine_id')->where('status','active')->oldest();
     }
 
     public function overall(){
         return $this->hasOne(MedicineBatch::class, 'medicine_id')
+            ->where('status','active')
             ->selectRaw('medicine_id, SUM(quantity_received) as total_received, SUM(quantity_remaining) as total_remaining')
             ->groupBy('medicine_id');
     }

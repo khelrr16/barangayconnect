@@ -34,22 +34,12 @@ class LoginController extends Controller
     {
         $user->update(['last_login_at' => now()]);
 
-        if ($user->hasRole('admin')) {
-            return redirect()->intended(route('admin.dashboard'));
-        } elseif ($user->hasRole('clerk')) {
-            return redirect()->intended(route('clerk.dashboard'));
-        } elseif ($user->hasRole('committee_head') || $user->roles()->whereNotNull('committee_id')->exists()) {
-            return redirect()->intended(route('committee.dashboard'));
-        } elseif ($user->hasRole('resident')) {
-            return redirect()->intended(route('resident.dashboard'));
-        }
-
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('index'));
     }
 
     protected function redirectTo()
     {
-        return route('dashboard'); // Fallback
+        return route('index'); // Fallback
     }
 
     public function showRegisterForm()

@@ -9,7 +9,7 @@ class MedicineBatch extends Model
     protected $fillable = [
         'medicine_id',
         'batch_number',
-        'supplier',
+        'manufacturer',
         'expiry_date',
         'received_date',
         'quantity_received',
@@ -17,6 +17,7 @@ class MedicineBatch extends Model
         'quantity_used',
         'quantity_wasted',
         'quantity_expired',
+        'status',
     ];
 
     protected $casts = [
