@@ -16,6 +16,7 @@ class Resident extends Model
         'full_name',
         'raw_rbi_no',
         'age',
+        'address',
         'length_of_stay',
     ];
 
@@ -75,6 +76,16 @@ class Resident extends Model
     public function getAgeAttribute(): int
     {
         return Carbon::parse($this->birthday)->age;
+    }
+
+    public function getAddressAttribute(): string
+    {
+        if ($this->household) {
+            $address = $this->household->first_address;
+            $address .= ", " . $this->household->second_address;
+            return $address;
+        }
+        return 'N/A';
     }
 
     public function getLengthOfStayAttribute(): string

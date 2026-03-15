@@ -16,6 +16,7 @@ class Household extends Model
         'household_head',
         'first_address',
         'second_address',
+        'address',
     ];
     
     protected $fillable = [

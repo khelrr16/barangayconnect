@@ -100,7 +100,7 @@
 
                             <div class="col-md-6">
                                 <small class="text-muted">DATE OF BIRTH</small>
-                                <div class="fw-semibold">{{ $resident->birthday }}</div>
+                                <div class="fw-semibold">{{ $resident->birthday->format('M d, Y') }}</div>
                             </div>
 
                             <div class="col-md-6">

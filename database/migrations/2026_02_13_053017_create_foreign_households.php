@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['house_number','street','subdivision','barangay','province'], 'unique_address');
+            $table->unique(['house_number', 'street', 'subdivision', 'barangay', 'province'], 'unique_foreign_address');
         });
     }
 

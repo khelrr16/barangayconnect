@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Committee\DashboardController as CommitteeDashboardController;
+use App\Http\Controllers\Committee\Health\DashboardController as CommitteeHealthDashboardController;
 use App\Http\Controllers\Health\ImmunizationController;
 use App\Http\Controllers\Health\InfantController;
 use App\Http\Controllers\Health\MedicineBatchController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\BudgetFinance\FinancialReportController;
 use App\Http\Controllers\Health\NutritionalAssessmentController;
 use App\Http\Controllers\Home\LandingController;
 use App\Http\Controllers\HouseholdController;
+use App\Http\Controllers\Peace\BlotterController;
 use App\Http\Controllers\Resident\PortalController as ResidentPortalController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\ResidentUploadController;
@@ -46,6 +48,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [LandingController::class, 'index'])->name('dashboard');
+
+    // Resident lookup endpoints used by reusable modal components.
+    Route::get('/api/residents/search', [ResidentController::class, 'apiSearch']);
+    Route::get('/api/residents/{resident}', [ResidentController::class, 'apiShow']);
+    Route::get('/api/residents/{resident}/address', [ResidentController::class, 'apiAddress']);
 
     Route::middleware('permission:manage households')->group(function () {
         Route::post('/household', [HouseholdController::class, 'store'])->name('household.store');
@@ -134,7 +141,16 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', [CommitteeDashboardController::class, 'index'])->name('dashboard');
         });
 
+        Route::get('/peace/blotter/', [BlotterController::class, 'index'])->name('peace.blotter.index');
+        Route::get('/peace/blotter/create', [BlotterController::class, 'create'])->name('peace.blotter.create');
+        Route::post('/peace/blotter/', [BlotterController::class, 'store'])->name('peace.blotter.store');
+
         Route::middleware('committee:health_sanitation')->group(function () {
+
+            Route::get('/health/dashboard', [CommitteeHealthDashboardController::class, 'index'])->name('health.dashboard');
+            Route::get('/health/dashboard/print', [CommitteeHealthDashboardController::class, 'print'])->name('health.dashboard.print');
+            Route::get('/health/dashboard/pdf', [CommitteeHealthDashboardController::class, 'pdf'])->name('health.dashboard.pdf');
+
             Route::get('/immunization', [ImmunizationController::class, 'index'])->name('immunization.index');
             Route::get('/immunization/{infant}', [ImmunizationController::class, 'show'])->name('immunization.show');
             Route::patch('/immunization/{infant}', [ImmunizationController::class, 'update'])->name('immunization.update');

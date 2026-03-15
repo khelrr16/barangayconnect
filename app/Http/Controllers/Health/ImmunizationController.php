@@ -8,6 +8,7 @@ use App\Models\Health\Infant;
 use App\Models\Health\Medicine;
 use App\Models\Health\MedicineBatch;
 use App\Models\Health\NutritionalAssessment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,10 @@ class ImmunizationController extends Controller
     {
         $tabs = ['newborn', 'months_1_3', 'months_6_11', 'months_12'];
         $tabConfigs = $this->tabConfigs();
+        $birthday = Carbon::parse($infant->birthday)->startOfDay();
+        $today = now()->startOfDay();
+        $scheduleDefinitions = collect($this->scheduleDefinitions($birthday));
+        $currentAgeLabel = $this->formatInfantAge($birthday, $today);
 
         if ($infant->household_id) {
             $infant->load('household');
@@ -60,11 +65,81 @@ class ImmunizationController extends Controller
 
         $medicineIdsByName = $medicines->pluck('id', 'name');
 
-        $immunizations = Immunization::query()
+        $immunizationRecords = Immunization::query()
             ->where('infant_id', $infant->id)
             ->whereIn('medicine_id', $medicines->pluck('id'))
+            ->orderBy('administration_date')
             ->get(['medicine_id', 'dose_number', 'administration_date'])
             ->keyBy(fn (Immunization $item) => $item->medicine_id . '|' . strtolower((string) $item->dose_number));
+
+        $overviewRows = $medicines->map(function (Medicine $medicine) use ($immunizationRecords, $scheduleDefinitions) {
+            $records = $immunizationRecords
+                ->filter(fn (Immunization $record) => $record->medicine_id === $medicine->id)
+                ->sortBy('administration_date')
+                ->values();
+
+            $nextSchedule = $scheduleDefinitions->first(function (array $schedule) use ($medicine, $records) {
+                if (!in_array($medicine->name, $schedule['medicines'], true)) {
+                    return false;
+                }
+
+                return !$records->contains(fn (Immunization $record) => strtolower((string) $record->dose_number) === $schedule['dose_key']);
+            });
+
+            return [
+                'name' => $medicine->name,
+                'total_used' => $records->count(),
+                'dates_administered' => $records
+                    ->pluck('administration_date')
+                    ->filter()
+                    ->map(fn (Carbon $date) => $date->format('M j, Y'))
+                    ->values()
+                    ->all(),
+                'next_due' => $nextSchedule ? $nextSchedule['window'] : 'Complete',
+                'next_due_label' => $nextSchedule ? $nextSchedule['title'] : 'Complete',
+            ];
+        })->values();
+
+        $scheduledImmunizations = $scheduleDefinitions->map(function (array $schedule) use ($medicineIdsByName, $immunizationRecords, $today) {
+            $completedMedicines = [];
+            $pendingMedicines = [];
+
+            foreach ($schedule['medicines'] as $medicineName) {
+                $medicineId = $medicineIdsByName->get($medicineName);
+                $record = $medicineId
+                    ? $immunizationRecords->get($medicineId . '|' . $schedule['dose_key'])
+                    : null;
+
+                if ($record) {
+                    $completedMedicines[] = $medicineName . ' (' . $record->administration_date->format('M j, Y') . ')';
+                    continue;
+                }
+
+                $pendingMedicines[] = $medicineName;
+            }
+
+            if (empty($pendingMedicines)) {
+                $status = ['label' => 'Completed', 'class' => 'text-bg-success'];
+            } elseif ($today->lt($schedule['due_date'])) {
+                $status = ['label' => 'Upcoming', 'class' => 'text-bg-secondary'];
+            } elseif ($schedule['deadline_date'] && $today->gt($schedule['deadline_date'])) {
+                $status = ['label' => 'Overdue', 'class' => 'text-bg-danger'];
+            } else {
+                $status = ['label' => 'Due now', 'class' => 'text-bg-warning'];
+            }
+
+            return [
+                'title' => $schedule['title'],
+                'window' => $schedule['window'],
+                'medicines' => $schedule['medicines'],
+                'completed_medicines' => $completedMedicines,
+                'pending_medicines' => $pendingMedicines,
+                'status' => $status['label'],
+                'status_class' => $status['class'],
+                'due_date' => $schedule['due_date']->format('M j, Y'),
+                'deadline_date' => $schedule['deadline_date']?->format('M j, Y'),
+            ];
+        })->values();
 
         $immunizationDates = [];
         
@@ -79,7 +154,7 @@ class ImmunizationController extends Controller
                     }
 
                     $recordKey = $medicineId . '|' . strtolower($doseNumber);
-                    $administrationDate = optional($immunizations->get($recordKey)?->administration_date)->format('Y-m-d');
+                    $administrationDate = optional($immunizationRecords->get($recordKey)?->administration_date)->format('Y-m-d');
                     $immunizationDates[$tabKey][$medicineId][$doseNumber] = $administrationDate;
                 }
             }
@@ -91,7 +166,10 @@ class ImmunizationController extends Controller
             'tabConfigs',
             'medicineIdsByName',
             'immunizationDates',
-            'assessments'
+            'assessments',
+            'overviewRows',
+            'scheduledImmunizations',
+            'currentAgeLabel'
         ));
     }
 
@@ -390,5 +468,84 @@ class ImmunizationController extends Controller
                 '2nd' => ['MMR'],
             ],
         ];
+    }
+
+    private function scheduleDefinitions(Carbon $birthday): array
+    {
+        return [
+            [
+                'dose_key' => '1st',
+                'title' => 'At birth',
+                'window' => '0-28 days old',
+                'medicines' => ['BCG', 'Hepa B-BD'],
+                'due_date' => $birthday->copy(),
+                'deadline_date' => $birthday->copy()->addDays(28),
+            ],
+            [
+                'dose_key' => '1st',
+                'title' => '6 weeks',
+                'window' => 'First primary series dose',
+                'medicines' => ['DPT-HiB-HepB', 'OPV', 'PCV', 'IPV'],
+                'due_date' => $birthday->copy()->addWeeks(6),
+                'deadline_date' => $birthday->copy()->addWeeks(10)->subDay(),
+            ],
+            [
+                'dose_key' => '2nd',
+                'title' => '10 weeks',
+                'window' => 'Second primary series dose',
+                'medicines' => ['DPT-HiB-HepB', 'OPV', 'PCV'],
+                'due_date' => $birthday->copy()->addWeeks(10),
+                'deadline_date' => $birthday->copy()->addWeeks(14)->subDay(),
+            ],
+            [
+                'dose_key' => '3rd',
+                'title' => '14 weeks',
+                'window' => 'Third primary series dose',
+                'medicines' => ['DPT-HiB-HepB', 'OPV', 'PCV'],
+                'due_date' => $birthday->copy()->addWeeks(14),
+                'deadline_date' => $birthday->copy()->addMonthsNoOverflow(9)->subDay(),
+            ],
+            [
+                'dose_key' => '1st',
+                'title' => '9 months',
+                'window' => '6-11 months old',
+                'medicines' => ['MMR'],
+                'due_date' => $birthday->copy()->addMonthsNoOverflow(9),
+                'deadline_date' => $birthday->copy()->addMonthsNoOverflow(12)->subDay(),
+            ],
+            [
+                'dose_key' => '2nd',
+                'title' => '9 months',
+                'window' => '6-11 months old',
+                'medicines' => ['IPV'],
+                'due_date' => $birthday->copy()->addMonthsNoOverflow(9),
+                'deadline_date' => $birthday->copy()->addMonthsNoOverflow(12)->subDay(),
+            ],
+            [
+                'dose_key' => '2nd',
+                'title' => '12 months',
+                'window' => 'Second MMR dose',
+                'medicines' => ['MMR'],
+                'due_date' => $birthday->copy()->addMonthsNoOverflow(12),
+                'deadline_date' => null,
+            ],
+        ];
+    }
+
+    private function formatInfantAge(Carbon $birthday, Carbon $today): string
+    {
+        $days = $birthday->diffInDays($today);
+        $weeks = $birthday->diffInWeeks($today);
+        $months = $birthday->diffInMonths($today);
+
+        if ($days < 30) {
+            return $days . ' day/s';
+        }
+
+        if ($weeks < 16) {
+            return $weeks . ' week/s';
+        }
+
+        return $months . ' month/s';
     }
 }
