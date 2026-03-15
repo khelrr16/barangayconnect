@@ -13,10 +13,30 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('middle_name')->nullable();
+            $table->string('last_name');
+            $table->string('suffix')->nullable();
             $table->string('email')->unique();
+            $table->string('contact_number')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('user_type', [
+                'admin',           // Full system access
+                'staff',           // Encoding residents/households
+                'committee_head',  // Committee chairperson
+                'committee_member',// Committee member
+                'bhw',             // Barangay Health Worker
+                'resident'         // Regular resident (for online requests)
+            ])->default('resident');
+            
+            // Link to official record if applicable
+            $table->foreignId('official_id')->nullable()->constrained('officials');
+            
+            // For resident accounts
+            $table->foreignId('resident_id')->nullable()->constrained('residents');
+            $table->boolean('is_active')->default(true);
+            $table->string('profile_photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

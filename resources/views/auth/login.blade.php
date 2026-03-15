@@ -255,14 +255,14 @@
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" 
-                               id="email" 
-                               name="email" 
-                               value="{{ old('email') }}" 
-                               class="@error('email') is-invalid @enderror"
-                               required 
-                               autofocus
-                               autocomplete="email"
-                               placeholder="Enter your email">
+                            id="email" 
+                            name="email" 
+                            value="{{ old('email') }}" 
+                            class="@error('email') is-invalid @enderror"
+                            required 
+                            autofocus
+                            autocomplete="email"
+                            placeholder="Enter your email">
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -272,12 +272,12 @@
                     <div class="form-group password-group">
                         <label for="password">Password</label>
                         <input type="password" 
-                               id="password" 
-                               name="password" 
-                               class="@error('password') is-invalid @enderror"
-                               required
-                               autocomplete="current-password"
-                               placeholder="Enter your password">
+                            id="password" 
+                            name="password" 
+                            class="@error('password') is-invalid @enderror"
+                            required
+                            autocomplete="current-password"
+                            placeholder="Enter your password">
                         <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
                             <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
                         </button>
@@ -292,7 +292,7 @@
                             <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                             <label for="remember">Remember me</label>
                         </div> -->
-                        <a href="{{ route('password.request') }}" class="forgot-password">
+                        <a href="{{ route('register') }}" class="forgot-password">
                             Register
                         </a>
 

@@ -219,7 +219,7 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <p>Register Account</p>
+                <h1>Register Account</h1>
             </div>
 
             <div class="login-body">
@@ -239,8 +239,31 @@
                     </div>
                 @endif
 
+                <!-- Lockout Timer -->
+                @if(session('lockout_time'))
+                    <div class="alert alert-warning">
+                        Too many login attempts. Please try again in 
+                        <span id="timer">{{ session('lockout_time') }}</span> seconds.
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login') }}" id="loginForm">
                     @csrf
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="name" 
+                               id="name" 
+                               name="name" 
+                               value="{{ old('name') }}" 
+                               class="@error('name') is-invalid @enderror"
+                               required
+                               placeholder="Enter your name">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <!-- Email Field -->
                     <div class="form-group">
@@ -251,8 +274,6 @@
                                value="{{ old('email') }}" 
                                class="@error('email') is-invalid @enderror"
                                required 
-                               autofocus
-                               autocomplete="email"
                                placeholder="Enter your email">
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -267,8 +288,24 @@
                                name="password" 
                                class="@error('password') is-invalid @enderror"
                                required
-                               autocomplete="current-password"
                                placeholder="Enter your password">
+                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
+                            <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
+                        </button>
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group password-group">
+                        <label for="password">Password</label>
+                        <input type="password" 
+                            id="password" 
+                            name="password" 
+                            class="@error('password') is-invalid @enderror"
+                            required
+                            placeholder="Enter your password">
                         <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
                             <i class="fa-regular fa-eye-slash" id="eyeIcon"></i>
                         </button>
@@ -306,6 +343,50 @@
         </div>
     </div>
 
+    <script>
+        // Prevent double submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = 'Signing in...';
+        });
+
+        // Lockout timer countdown
+        @if(session('lockout_time'))
+            let seconds = {{ session('lockout_time') }};
+            const timerElement = document.getElementById('timer');
+            
+            const countdown = setInterval(function() {
+                seconds--;
+                timerElement.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    location.reload(); // Refresh page to enable login
+                }
+            }, 1000);
+        @endif
+
+        // Shake animation on error
+        @if($errors->any())
+            document.querySelector('.login-card').classList.add('shake');
+            setTimeout(() => {
+                document.querySelector('.login-card').classList.remove('shake');
+            }, 300);
+        @endif
+
+        // Password show/hide toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+            eyeIcon.className = type === 'password' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+            togglePassword.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+        });
+    </script>
     @include('partials.loading-screen')
 </body>
 </html>

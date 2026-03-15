@@ -49,6 +49,11 @@ class LoginController extends Controller
         return route('dashboard'); // Fallback
     }
 
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
     public function showForgotPasswordForm()
     {
         return view('auth.forgot-password');
