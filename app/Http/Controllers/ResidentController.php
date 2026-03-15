@@ -14,6 +14,88 @@ use Illuminate\Support\Facades\DB;
 
 class ResidentController extends Controller
 {
+    public function apiSearch(Request $request)
+    {
+        $term = trim((string) $request->query('term', ''));
+        $purok = trim((string) $request->query('purok', ''));
+        $civilStatus = trim((string) $request->query('civil_status', ''));
+        $ageRange = trim((string) $request->query('age_range', ''));
+        $excludeIds = collect(explode(',', (string) $request->query('exclude', '')))
+            ->map(fn ($id) => (int) trim($id))
+            ->filter(fn ($id) => $id > 0)
+            ->values();
+
+        $query = Resident::with('household')
+            ->orderBy('last_name')
+            ->orderBy('first_name');
+
+        if ($term !== '') {
+            $query->where(function ($qb) use ($term) {
+                $qb->where('first_name', 'like', "%{$term}%")
+                    ->orWhere('middle_name', 'like', "%{$term}%")
+                    ->orWhere('last_name', 'like', "%{$term}%")
+                    ->orWhere('contact_number', 'like', "%{$term}%");
+
+                if (is_numeric($term)) {
+                    $qb->orWhere('id', (int) $term);
+                }
+            });
+        }
+
+        if ($civilStatus !== '') {
+            $query->where('civil_status', $civilStatus);
+        }
+
+        if ($purok !== '') {
+            $query->whereHas('household', function ($qh) use ($purok) {
+                $qh->where('block', $purok);
+            });
+        }
+
+        if ($excludeIds->isNotEmpty()) {
+            $query->whereNotIn('id', $excludeIds->all());
+        }
+
+        $residents = $query->limit(100)->get();
+
+        if ($ageRange !== '' && preg_match('/^(\d+)-(\d+)$/', $ageRange, $matches)) {
+            $min = (int) $matches[1];
+            $max = (int) $matches[2];
+            $residents = $residents->filter(function (Resident $resident) use ($min, $max) {
+                return $resident->age >= $min && $resident->age <= $max;
+            })->values();
+        }
+
+        return response()->json($residents->values());
+    }
+
+    public function apiShow(Resident $resident)
+    {
+        $resident->load('household');
+
+        return response()->json($resident);
+    }
+
+    public function apiAddress(Resident $resident)
+    {
+        $resident->load('household');
+        $household = $resident->household;
+
+        if (! $household) {
+            return response()->json([
+                'complete' => '',
+                'street' => '',
+                'purok' => '',
+            ]);
+        }
+
+        return response()->json([
+            'complete' => $household->address,
+            'street' => $household->street ?? '',
+            'purok' => $household->block ?? '',
+        ]);
+    }
+
     public function index()
     {
         $residents = Resident::withTrashed()

@@ -49,6 +49,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [LandingController::class, 'index'])->name('dashboard');
 
+    // Resident lookup endpoints used by reusable modal components.
+    Route::get('/api/residents/search', [ResidentController::class, 'apiSearch']);
+    Route::get('/api/residents/{resident}', [ResidentController::class, 'apiShow']);
+    Route::get('/api/residents/{resident}/address', [ResidentController::class, 'apiAddress']);
+
     Route::middleware('permission:manage households')->group(function () {
         Route::post('/household', [HouseholdController::class, 'store'])->name('household.store');
         Route::get('/household/create', [HouseholdController::class, 'create'])->name('household.create');
