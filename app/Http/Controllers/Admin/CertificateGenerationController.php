@@ -85,19 +85,40 @@ class CertificateGenerationController extends Controller
         $phpWord = new PhpWord;
         $section = $phpWord->addSection();
 
-        // Header
-        $section->addText('REPUBLIKA NG PILIPINAS', [], ['alignment' => Jc::CENTER]);
-        $section->addText('LALAWIGAN NG LAGUNA', [], ['alignment' => Jc::CENTER]);
-        $section->addText('LUNGSOD NG SAN PEDRO', [], ['alignment' => Jc::CENTER]);
-        $section->addText($barangayName, ['bold' => true], ['alignment' => Jc::CENTER]);
-        $section->addText($barangayAddress, [], ['alignment' => Jc::CENTER]);
-        $section->addText($contactNos, [], ['alignment' => Jc::CENTER]);
-        $section->addText('OFFICE OF THE PUNONG BARANGAY', [], ['alignment' => Jc::CENTER]);
-        $section->addTextBreak(1);
+        // Header row: logos left & right with text in the middle (text wraps between images, starts at top)
+        $logoLeftPath = public_path('img/logo.png');
+        $logoRightPath = public_path('img/Seal_of_San_Pedro,_Laguna.png');
+        $logoSize = ['width' => 80, 'height' => 80];
+        $colLogoTwips = 2500;
+        $colCenterTwips = 4500;
+
+        $table = $section->addTable([
+            'layout' => \PhpOffice\PhpWord\Style\Table::LAYOUT_FIXED,
+            'width' => 9500,
+            'unit' => \PhpOffice\PhpWord\SimpleType\TblWidth::TWIP,
+        ]);
+        $row = $table->addRow();
+        $cellLeft = $row->addCell($colLogoTwips, ['valign' => 'center']);
+        $cellCenter = $row->addCell($colCenterTwips, ['valign' => 'center']);
+        $cellRight = $row->addCell($colLogoTwips, ['valign' => 'center']);
+        if (file_exists($logoLeftPath)) {
+            $cellLeft->addTextRun(['alignment' => Jc::START])->addImage($logoLeftPath, $logoSize);
+        }
+        $cellCenter->addText('REPUBLIKA NG PILIPINAS', [], ['alignment' => Jc::CENTER]);
+        $cellCenter->addText('LALAWIGAN NG LAGUNA', [], ['alignment' => Jc::CENTER]);
+        $cellCenter->addText('LUNGSOD NG SAN PEDRO', [], ['alignment' => Jc::CENTER]);
+        $cellCenter->addText($barangayName, ['bold' => true], ['alignment' => Jc::CENTER]);
+        $cellCenter->addText($barangayAddress, [], ['alignment' => Jc::CENTER]);
+        $cellCenter->addText($contactNos, [], ['alignment' => Jc::CENTER]);
+        $cellCenter->addText('OFFICE OF THE PUNONG BARANGAY', [], ['alignment' => Jc::CENTER]);
+        if (file_exists($logoRightPath)) {
+            $cellRight->addTextRun(['alignment' => Jc::END])->addImage($logoRightPath, $logoSize);
+        }
+        $section->addTextBreak(0);
 
         // Title
         $section->addText('CERTIFICATE OF INDIGENCY', ['bold' => true, 'size' => 14], ['alignment' => Jc::CENTER]);
-        $section->addTextBreak(2);
+        $section->addTextBreak(1);
 
         // Body paragraph 1
         $body1 = "This is to certify that {$resident->full_name} is a bona fide resident of {$address}, from the low-income sector of our community and could not afford the {$validated['purpose']}.";
@@ -111,7 +132,7 @@ class CertificateGenerationController extends Controller
 
         $body3 = "Given this {$dateIssued} at Barangay San Lorenzo Ruiz, City of San Pedro, Province of Laguna.";
         $section->addText($body3, [], ['alignment' => Jc::BOTH]);
-        $section->addTextBreak(3);
+        $section->addTextBreak(2);
 
         // Signatory (right-aligned)
         $section->addText($punongBarangay, ['bold' => true], ['alignment' => Jc::END]);
