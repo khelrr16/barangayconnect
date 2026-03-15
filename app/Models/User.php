@@ -14,6 +14,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'official_id',
+        'resident_id',
         'name',
         'email',
         'password',
@@ -53,5 +54,15 @@ class User extends Authenticatable
             'official_id',
             'committee_id'
         );
+    }
+
+    public function resident()
+    {
+        return $this->belongsTo(Resident::class);
+    }
+
+    public function residentLinkVerifications()
+    {
+        return $this->hasMany(ResidentLinkVerification::class);
     }
 }

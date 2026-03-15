@@ -5,19 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\Official;
+use App\Models\Resident;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->orderBy('name')->get();
-        $roles = Role::query()->orderBy('name')->get();
-        $officials = Official::all();
+        $users = User::with('roles', 'resident')->orderBy('name')->get();
+        $roles = Role::query()->with('committee')->orderBy('name')->get();
+        $officials = Official::with('committee')->orderBy('name')->get();
+        $officialsByCommittee = $officials->groupBy('committee_id')->map(fn ($list) => $list->map(fn ($o) => ['id' => $o->id, 'name' => $o->name])->values())->toArray();
+        $residents = Resident::orderBy('last_name')->orderBy('first_name')->get();
 
-        return view('admin.users.index', compact('users', 'roles', 'officials'));
+        return view('admin.users.index', compact('users', 'roles', 'officials', 'officialsByCommittee', 'residents'));
     }
 
     public function store(UserRequest $request)
@@ -26,6 +29,13 @@ class UserController extends Controller
 
         $role = $validated['role'];
         unset($validated['role']);
+
+        $roleModel = Role::where('name', $role)->first();
+        $isCommitteeRole = $roleModel && $roleModel->isCommitteeRole();
+        if (!$isCommitteeRole) {
+            $validated['official_id'] = null;
+        }
+        $validated['resident_id'] = !empty($validated['resident_id']) ? $validated['resident_id'] : null;
 
         $user = User::create($validated);
         $user->syncRoles([$role]);
@@ -44,6 +54,12 @@ class UserController extends Controller
         if (empty($validated['password'])) {
             unset($validated['password']);
         }
+        $roleModel = Role::where('name', $role)->first();
+        $isCommitteeRole = $roleModel && $roleModel->isCommitteeRole();
+        if (!$isCommitteeRole) {
+            $validated['official_id'] = null;
+        }
+        $validated['resident_id'] = !empty($validated['resident_id']) ? $validated['resident_id'] : null;
 
         $user->update($validated);
         $user->syncRoles([$role]);

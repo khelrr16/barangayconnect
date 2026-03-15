@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Committee;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
@@ -48,10 +49,30 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate([
                 'name' => $permission,
                 'guard_name' => $guardName,
+                'committee_id' => null,
             ]);
         }
 
+        // Committee-specific permissions (only show for that committee's roles in roles-permissions UI)
+        $budgetFinanceCommittee = Committee::where('slug', 'budget_finance')->first();
+        if ($budgetFinanceCommittee) {
+            $budgetFinancePermissions = [
+                'view budget_finance_budget',
+                'view budget_finance_disbursements',
+                'view budget_finance_fund_sources',
+                'view budget_finance_reports',
+            ];
+            foreach ($budgetFinancePermissions as $perm) {
+                Permission::firstOrCreate([
+                    'name' => $perm,
+                    'guard_name' => $guardName,
+                    'committee_id' => $budgetFinanceCommittee->id,
+                ]);
+            }
+        }
+
         $allPermissions = Permission::query()
+            ->whereNull('committee_id')
             ->where('guard_name', $guardName)
             ->pluck('name');
 
@@ -94,5 +115,10 @@ class PermissionSeeder extends Seeder
         ]);
 
         $adminRole->syncPermissions($allPermissions);
+
+        Role::firstOrCreate([
+            'name' => 'resident',
+            'guard_name' => $guardName,
+        ]);
     }
 }

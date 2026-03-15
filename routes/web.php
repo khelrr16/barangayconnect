@@ -1,7 +1,11 @@
 <?php
 
 
+use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\CertificateGenerationController;
+use App\Http\Controllers\Admin\CertificateRequestController;
 use App\Http\Controllers\Admin\CommitteeController;
+use App\Http\Controllers\Admin\ResidentLinkVerificationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OfficialController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -13,10 +17,15 @@ use App\Http\Controllers\Health\ImmunizationController;
 use App\Http\Controllers\Health\InfantController;
 use App\Http\Controllers\Health\MedicineBatchController;
 use App\Http\Controllers\Health\MedicineController;
+use App\Http\Controllers\BudgetFinance\BudgetOverviewController;
+use App\Http\Controllers\BudgetFinance\DisbursementController;
+use App\Http\Controllers\BudgetFinance\FundSourceController;
+use App\Http\Controllers\BudgetFinance\FinancialReportController;
 use App\Http\Controllers\Health\NutritionalAssessmentController;
 use App\Http\Controllers\Home\LandingController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\Peace\BlotterController;
+use App\Http\Controllers\Resident\PortalController as ResidentPortalController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\ResidentUploadController;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +37,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [LoginController::class, 'register']);
+    Route::post('/register', [LoginController::class, 'registerStore'])->name('register.store');
     Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [LoginController::class, 'sendResetCode'])->name('password.email');
     Route::get('/reset-password', [LoginController::class, 'showResetPasswordForm'])->name('password.reset');
@@ -74,7 +83,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/resident/{resident}', [ResidentController::class, 'destroy'])->name('resident.destroy');
         Route::get('/resident/{resident}/edit', [ResidentController::class, 'edit'])->name('resident.edit');
         Route::patch('resident/{resident}/restore', [ResidentController::class, 'restore'])->name('resident.restore');
-        
+
 
         //Manage households
         Route::middleware('permission:view households')->group(function () {
@@ -83,11 +92,46 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
+        Route::get('roles-permissions/create', [RolePermissionController::class, 'create'])->name('roles-permissions.create');
+        Route::post('roles-permissions', [RolePermissionController::class, 'store'])->name('roles-permissions.store');
         Route::patch('roles-permissions/{role}', [RolePermissionController::class, 'update'])->name('roles-permissions.update');
+        Route::delete('roles-permissions/{role}', [RolePermissionController::class, 'destroy'])->name('roles-permissions.destroy');
+
+        Route::get('certificate-requests', [CertificateRequestController::class, 'index'])->name('certificate-requests.index');
+        Route::get('certificate-requests/{certificate_request}', [CertificateRequestController::class, 'show'])->name('certificate-requests.show');
+        Route::patch('certificate-requests/{certificate_request}', [CertificateRequestController::class, 'update'])->name('certificate-requests.update');
+
+        Route::get('certificates/indigency', [CertificateGenerationController::class, 'createIndigency'])->name('certificates.indigency.create');
+        Route::post('certificates/indigency', [CertificateGenerationController::class, 'generateIndigency'])->name('certificates.indigency.generate');
+        Route::get('certificates/residents-search', [CertificateGenerationController::class, 'searchResidents'])->name('certificates.residents-search');
+
+        Route::get('verification-requests', [ResidentLinkVerificationController::class, 'index'])->name('verification-requests.index');
+        Route::get('verification-requests/{verification}', [ResidentLinkVerificationController::class, 'show'])->name('verification-requests.show');
+        Route::patch('verification-requests/{verification}/approve', [ResidentLinkVerificationController::class, 'approve'])->name('verification-requests.approve');
+        Route::patch('verification-requests/{verification}/reject', [ResidentLinkVerificationController::class, 'reject'])->name('verification-requests.reject');
+
+        Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+        Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::get('announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+        Route::patch('announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+    });
+
+    // Resident portal
+    Route::middleware(['role:resident'])->prefix('resident')->name('resident.')->group(function () {
+        Route::get('/', [ResidentPortalController::class, 'index'])->name('dashboard');
+        Route::get('/profile', [ResidentPortalController::class, 'profile'])->name('profile');
+        Route::post('/profile/send-verification', [ResidentPortalController::class, 'sendVerification'])->name('profile.send-verification');
+        Route::get('/request-document', [ResidentPortalController::class, 'requestDocument'])->name('request-document');
+        Route::post('/request-document', [ResidentPortalController::class, 'storeDocumentRequest'])->name('request-document.store');
+        Route::get('/my-requests', [ResidentPortalController::class, 'myRequests'])->name('my-requests');
+        Route::get('/announcements', [ResidentPortalController::class, 'announcements'])->name('announcements');
+        Route::get('/contact', [ResidentPortalController::class, 'contact'])->name('contact');
     });
 
     //Committees
-    Route::middleware('role:committee_head')->prefix('committee')->name('committee.')->group(function () {
+    Route::middleware('committee_role')->prefix('committee')->name('committee.')->group(function () {
         Route::middleware('permission:view committee_dashboard')->group(function () {
             Route::get('/dashboard', [CommitteeDashboardController::class, 'index'])->name('dashboard');
         });
@@ -117,8 +161,19 @@ Route::middleware('auth')->group(function () {
             Route::get('/medicine/{medicine}', [MedicineController::class, 'show'])->name('medicine.show');
             Route::delete('/medicine/{medicine}', [MedicineController::class, 'destroy'])->name('medicine.destroy');
             Route::get('/medicine/create', [MedicineController::class, 'create'])->name('medicine.create');
-            
+
             Route::post('/medicine/batch/create', [MedicineBatchController::class, 'store'])->name('medicine.batch.store');
+        });
+
+        Route::middleware('committee:budget_finance')->group(function () {
+            Route::get('/budget', [BudgetOverviewController::class, 'index'])->name('budget.index');
+            Route::get('/disbursements', [DisbursementController::class, 'index'])->name('disbursements.index');
+            Route::get('/disbursements/create', [DisbursementController::class, 'create'])->name('disbursements.create');
+            Route::post('/disbursements', [DisbursementController::class, 'store'])->name('disbursements.store');
+            Route::get('/fund-sources', [FundSourceController::class, 'index'])->name('fund-sources.index');
+            Route::get('/fund-sources/create', [FundSourceController::class, 'create'])->name('fund-sources.create');
+            Route::post('/fund-sources', [FundSourceController::class, 'store'])->name('fund-sources.store');
+            Route::get('/reports', [FinancialReportController::class, 'index'])->name('reports.index');
         });
     });
 });

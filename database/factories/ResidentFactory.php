@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Admin\Household;
+use App\Models\Household;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin\Resident>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Resident>
  */
 class ResidentFactory extends Factory
 {
@@ -41,7 +41,7 @@ class ResidentFactory extends Factory
             ]),
             'occupation' => $this->faker->jobTitle(),
             'employment_status' => $this->faker->randomElement([
-                'Employment Full-time', 'Employment Part-time', 'Self-Employed', 'Unemployed', 
+                'Employment Full-time', 'Employment Part-time', 'Self-Employed', 'Unemployed',
                 'Student', 'Out of School Children', 'Out of School Youth',
                 'Retired', 'Homemaker', 'Others']),
             'monthly_income' => $this->faker->randomElement([

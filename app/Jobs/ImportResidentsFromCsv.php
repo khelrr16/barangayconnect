@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Models\Admin\Household;
-use App\Models\Admin\Resident;
-use App\Models\Admin\ResidentCsvImport;
-use App\Models\Admin\ResidentCsvImportFailure;
+use App\Models\Household;
+use App\Models\Resident;
+use App\Models\ResidentCsvImport;
+use App\Models\ResidentCsvImportFailure;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Bus\Queueable;

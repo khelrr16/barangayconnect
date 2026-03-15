@@ -4,7 +4,7 @@
     </div>
 
     <nav class="sidebar-nav">
-        
+
 
         <ul class="nav-menu">
             @if(Auth::user()->hasRole('admin'))
@@ -69,7 +69,30 @@
                     </ul>
                 </div>
             </li>
-            
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle no-arrow d-flex justify-content-between align-items-center" data-bs-target="#certificateSubmenu" aria-controls="certificateSubmenu" href="#" role="button" data-bs-toggle="collapse" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span class="nav-text">CERTIFICATE REQUESTS</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down custom-arrow"></i>
+                </a>
+                <div class="collapse" id="certificateSubmenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.certificate-requests.index') }}" class="nav-link">
+                                <span class="nav-text">View requests</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.certificates.indigency.create') }}" class="nav-link">
+                                <span class="nav-text">Generate Certificate of Indigency</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
             @can('view officials')
             <li class="nav-item">
@@ -94,6 +117,24 @@
                 <a href="{{ route('admin.users.index') }}" class="nav-link">
                     <i class="fa-solid fa-user-gear"></i>
                     <span class="nav-text">USER ACCOUNTS</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('manage users')
+            <li class="nav-item">
+                <a href="{{ route('admin.verification-requests.index') }}" class="nav-link">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span class="nav-text">LINK VERIFICATION REQUESTS</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('manage users')
+            <li class="nav-item">
+                <a href="{{ route('admin.announcements.index') }}" class="nav-link">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span class="nav-text">ANNOUNCEMENTS</span>
                 </a>
             </li>
             @endcan

@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Official;
+use App\Models\Resident;
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
-use App\Models\Admin\Official;
 
 class UserRequest extends FormRequest
 {
@@ -19,8 +20,8 @@ class UserRequest extends FormRequest
         // Get the user ID from route if it's an update
         $userId = $this->route('user') ?? $this->route('ua') ?? $this->route('id');
         $validRoles = Role::query()->pluck('name')->all();
-        $validOfficials = Official::query()->pluck('id')->all();
-        
+        $validResidentIds = Resident::query()->pluck('id')->all();
+
         $rules = [
             'name' => [
                 'required',
@@ -32,7 +33,7 @@ class UserRequest extends FormRequest
                 'required',
                 'email',
                 'max:255',
-                $userId 
+                $userId
                     ? Rule::unique('users')->ignore($userId)
                     : Rule::unique('users')
             ],
@@ -63,13 +64,23 @@ class UserRequest extends FormRequest
             $rules['password_confirmation'] = 'sometimes|nullable|string';
         }
 
-        if($this->input('role') === 'committee_head') {
+        $roleName = $this->input('role');
+        $role = $roleName ? Role::where('name', $roleName)->first() : null;
+        if ($role && $role->isCommitteeRole()) {
+            $validOfficialIds = $role->committee_id
+                ? Official::where('committee_id', $role->committee_id)->pluck('id')->all()
+                : Official::query()->pluck('id')->all();
             $rules['official_id'] = [
                 'required',
-                Rule::in($validOfficials),
+                Rule::in($validOfficialIds),
             ];
         }
-        
+
+        $rules['resident_id'] = [
+            'nullable',
+            Rule::in($validResidentIds),
+        ];
+
         return $rules;
     }
 

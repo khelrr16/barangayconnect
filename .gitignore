@@ -17,8 +17,12 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/app/temp
 /storage/pail
 /vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
+composer.lock
+composer.json
+package-lock.json

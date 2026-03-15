@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -37,8 +38,10 @@ class LoginController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         } elseif ($user->hasRole('clerk')) {
             return redirect()->intended(route('clerk.dashboard'));
-        } elseif ($user->hasRole('committee_head')) {
+        } elseif ($user->hasRole('committee_head') || $user->roles()->whereNotNull('committee_id')->exists()) {
             return redirect()->intended(route('committee.dashboard'));
+        } elseif ($user->hasRole('resident')) {
+            return redirect()->intended(route('resident.dashboard'));
         }
 
         return redirect()->intended(route('dashboard'));
@@ -141,5 +144,25 @@ class LoginController extends Controller
         DB::table('password_reset_tokens')->where('email', $email)->delete();
 
         return redirect()->route('login')->with('status', 'Password has been reset. You can now sign in.');
+    }
+
+    public function registerStore(Request $request)
+    {
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $user->assignRole('resident');
+
+        return redirect()->route('login')->with('status', 'Account created successfully. You can now sign in.');
     }
 }

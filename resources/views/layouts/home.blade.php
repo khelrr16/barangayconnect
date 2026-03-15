@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <title>@yield('title', 'Your Website')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -25,8 +25,17 @@
                 <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
                 @if (auth()->check() && auth()->user()->hasRole(['admin', 'staff']))
                     <li class="nav-item"><a href="{{ route('admin.dashboard') }}" class="nav-link">Admin Dashboard</a></li>
-                @else
+                @endif
+                @if (auth()->guest())
                     <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
+                    <li class="nav-item"><a href="{{ route('register') }}" class="nav-link">Register</a></li>
+                @else
+                    <li class="nav-item">
+                        <form method="POST" action="{{ route('logout') }}" class="nav-logout-form">
+                            @csrf
+                            <button type="submit" class="nav-link nav-link-button">Logout</button>
+                        </form>
+                    </li>
                 @endif
             </ul>
             <div class="hamburger">
