@@ -2,7 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\CommunityOrganization;
+use App\Models\HealthProfile;
+use App\Models\Household;
+use App\Models\Resident;
+use App\Models\ResidentProgram;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +19,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            PermissionSeeder::class,
+            ProgramSeeder::class,
+            CommitteeSeeder::class,
+            OfficialSeeder::class,
+            UserSeeder::class,
+            MedicineSeeder::class,
+            // ResidentSeeder::class, //BEEEG DATA
         ]);
     }
 }
