@@ -19,14 +19,5 @@ class UserSeeder extends Seeder
         ]);
 
         $admin->assignRole('admin');
-
-        $user1 = User::create([
-            'name' => 'Hitler',
-            'official_id' => 1,
-            'email' => 'hitler@gmail.com',
-            'password' => 'hitler123',
-        ]);
-
-        $user1->assignRole('committee_head');
     }
 }

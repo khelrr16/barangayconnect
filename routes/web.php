@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', UserController::class)->except(['show']);
         Route::resource('official', OfficialController::class);
         Route::resource('committee', CommitteeController::class);
+        Route::get('committee/{committee}/open', [CommitteeController::class, 'openDashboard'])->name('committee.open');
 
 
         Route::get('/resident', [ResidentController::class, 'index'])->name('resident.index');

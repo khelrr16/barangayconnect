@@ -45,14 +45,7 @@
                 </div>
             @endif
         @else
-            <div class="card mb-4">
-                <div class="card-body">
-                    <p class="text-muted">Your account is not linked to a resident record. Upload a valid ID (e.g. Philippine National ID) so we can verify and link your profile.</p>
-                    <p class="mb-0"><strong>Account:</strong> {{ auth()->user()->name }} &mdash; {{ auth()->user()->email }}</p>
-                </div>
-            </div>
-
-            @if($pendingVerification)
+            @if($verifications->isNotEmpty() && $pendingVerification)
                 <div class="card border-warning">
                     <div class="card-body">
                         <p class="mb-0 text-success"><i class="fa-solid fa-circle-check"></i> You've sent a verification ID. Please wait for the admin to review and link your profile.</p>
@@ -61,14 +54,14 @@
                 </div>
             @else
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-warning">
                         <h5 class="mb-0">Submit Verification ID</h5>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <span class="badge bg-danger fw-bold">REJECTED</span>
-                            <div>
-                                {{ $pendingVerification->remarks ?? 'Your previous verification ID was rejected by the admin.' }}
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p class="text-muted">Your account is not linked to a resident record. Upload a valid ID (e.g. Philippine National ID) so we can verify and link your profile.</p>
+                                <p class="mb-0"><strong>Name:</strong> {{ auth()->user()->name }} &mdash; {{ auth()->user()->email }}</p>
                             </div>
                         </div>
 
@@ -84,8 +77,38 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Send Verification ID</button>
                         </form>
-
                     </div>
+                </div>
+            @endif
+
+            @if($verifications->isNotEmpty())
+                <div class="my-3 table-responsive">
+                    <table class="table rounded-3">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Submitted At</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($verifications as $verification)
+                                <tr>
+                                    <td>
+                                        @if($verification->status === 'approved')
+                                            <span class="badge bg-success">Approved</span>
+                                        @elseif($verification->status === 'rejected')
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @else
+                                            <span class="badge bg-warning">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $verification->created_at->format('F j, Y g:i A') }}</td>
+                                    <td>{{ $verification->remarks ?? '-' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             @endif
         @endif

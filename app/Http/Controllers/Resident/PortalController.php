@@ -7,6 +7,7 @@ use App\Models\Announcement;
 use App\Models\CertificateRequest;
 use App\Models\ResidentLinkVerification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PortalController extends Controller
 {
@@ -31,11 +32,17 @@ class PortalController extends Controller
 
     public function profile()
     {
-        $resident = auth()->user()->resident;
-        $household = $resident?->household;
-        $pendingVerification = $resident ? null : auth()->user()->residentLinkVerifications()->where('status', 'pending')->latest()->first();
+        $user = Auth::user();
+        $resident = $user->resident;
 
-        return view('resident.profile', compact('resident', 'household', 'pendingVerification'));
+        if($resident) {
+            $resident->load('household');
+        } else {
+            $pendingVerification = $user->residentLinkVerifications()->where('status', 'pending')->latest()->first();
+            $verifications = $user->residentLinkVerifications()->get();
+        }
+
+        return view('resident.profile', compact('resident', 'pendingVerification', 'verifications'));
     }
 
     public function sendVerification(Request $request)

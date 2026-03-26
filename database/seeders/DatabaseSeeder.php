@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             OfficialSeeder::class,
             UserSeeder::class,
             MedicineSeeder::class,
-            // ResidentSeeder::class, //BEEEG DATA
+            ResidentSeeder::class, //BEEEG DATA
         ]);
     }
 }

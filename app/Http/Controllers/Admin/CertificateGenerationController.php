@@ -50,6 +50,15 @@ class CertificateGenerationController extends Controller
         $results = $residents->map(fn (Resident $r) => [
             'id' => $r->id,
             'text' => $r->full_name . ($r->rbi_no ? " ({$r->rbi_no})" : ''),
+            'rbi_no' => $r->rbi_no,
+            'full_name' => $r->full_name,
+            'sex' => $r->sex,
+            'civil_status' => $r->civil_status,
+            'birthday' => optional($r->birthday)->toDateString(),
+            'age' => $r->age,
+            'address' => $r->address,
+            'contact_number' => $r->contact_number,
+            'email' => $r->email,
         ])->values()->all();
 
         return response()->json(['results' => $results]);

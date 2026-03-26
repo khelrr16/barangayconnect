@@ -20,7 +20,18 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        $committeeSlug = $user?->official?->committee?->slug;
+        $committeeSlug = null;
+
+        if ($user->hasRole('admin')) {
+            $committeeSlug = session('admin_active_committee_slug');
+
+            if ($committeeSlug === null) {
+                return redirect()->route('admin.committee.index')
+                    ->with('error', 'Please open a committee from the Committees page first.');
+            }
+        } else {
+            $committeeSlug = $user?->official?->committee?->slug;
+        }
 
         if ($committeeSlug === null && $user?->hasRole('assistant')) {
             $committeeSlug = $user->assistedCommitteeSlug();

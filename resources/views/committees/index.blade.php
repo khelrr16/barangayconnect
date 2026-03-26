@@ -9,6 +9,8 @@
             'peace_order' => 'peace',
             'budget_finance' => 'budget',
         ];
+
+        $supportedSlugs = array_keys($links);
     @endphp
 
     <div class="container-fluid mt-4">
@@ -38,7 +40,7 @@
                                 <td>
                                     <div class="d-flex justify-content-center gap-2 text-center">
                                         @if(array_key_exists($committee->slug, $links))
-                                            <a href="{{ route('committee.' . $links[$committee->slug] . '.index') }}" class="btn btn-primary">
+                                            <a href="{{ route('admin.committee.open', $committee) }}" class="btn btn-primary">
                                                 VIEW
                                             </a>
                                         @else

@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class CommitteeController extends Controller
 {
+    private const DASHBOARD_SLUGS = [
+        'health_sanitation',
+        'peace_order',
+        'budget_finance',
+    ];
+
     public function index()
     {
         $committees = Committee::all();
@@ -52,5 +58,20 @@ class CommitteeController extends Controller
     public function redirect()
     {
         return redirect()->route('admin.committee.index');
+    }
+
+    public function openDashboard(Committee $committee)
+    {
+        if (! in_array($committee->slug, self::DASHBOARD_SLUGS, true)) {
+            return redirect()->route('admin.committee.index')
+                ->with('error', 'Selected committee dashboard is not available yet.');
+        }
+
+        session([
+            'admin_active_committee_slug' => $committee->slug,
+            'admin_active_committee_name' => $committee->name,
+        ]);
+
+        return redirect()->route('committee.index');
     }
 }
